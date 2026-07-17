@@ -86,11 +86,20 @@ const GeneratorUI = {
 
 
 
-        const list =
+        const report =
 
-        CuttingList.generate(
-            parts
-        );
+ProductionOutput.generate(
+
+    Project
+
+);
+
+
+ProductionOutput.display(
+
+    report
+
+);
 
 
 

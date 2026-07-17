@@ -5,7 +5,7 @@
 ===================================================== */
 
 
-const DimensionSystem = {
+const InteractionDimensionSystem = {
 
 
 
@@ -191,7 +191,7 @@ document.addEventListener(
 ()=>{
 
 
-    DimensionSystem.init();
+    InteractionDimensionSystem.init();
 
 
 });

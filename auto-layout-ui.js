@@ -297,21 +297,32 @@ const AutoLayoutUI = {
 
 
 
-        const layout =
+       let layout =
 
-        LayoutEngine.generate({
+LayoutEngine.generate({
 
-            width,
+    width,
 
-            compartments:
-            count,
+    compartments:
+    count,
 
-            hanging,
+    hanging,
 
-            open
+    open
+
+});
 
 
-        });
+
+layout =
+
+LayoutOptimizer.optimise(
+
+    layout,
+
+    width
+
+); 
 
 
 

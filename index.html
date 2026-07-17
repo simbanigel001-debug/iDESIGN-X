@@ -54,7 +54,18 @@ Redo
 </button>
 Export Cutting List
 </button>
+<button onclick="DesignStorage.saveProject('My Wardrobe')">
 
+Save Project
+
+</button>
+
+
+<button onclick="DesignStorage.getProjects()">
+
+Projects
+
+</button>
 
 <button onclick="ProductionExport.exportSheets()">
 Export Sheets
@@ -446,6 +457,8 @@ Export Sheets
 <script src="cabinet-canvas.js"></script>
 <script src="resize-handles.js"></script>
 <script src="property-inspector"></script>
+<script src="undo-redo-system.js"></script>
+<script srsc="design-save-system.js"></script>
 <script src="cutting-list.js"></script>
 <script src="project-ui.js"></script>
 <script src="generator-ui.js"></script>

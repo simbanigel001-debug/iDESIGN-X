@@ -51,7 +51,7 @@ bind(){
         "Canvas events ready"
     );
 
-}
+}, //
     render(){
 
 

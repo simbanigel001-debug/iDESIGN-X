@@ -82,7 +82,7 @@ const CabinetEngine = {
                 ...compartment,
 
                 width:width
-
+console.log("The element I am trying to add is:", nameOfVariableYouAreAppending);
 
             };
 

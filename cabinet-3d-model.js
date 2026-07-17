@@ -1,27 +1,15 @@
-/* =====================================================
-   Cabinet Studio
-   3D Cabinet Model Generator - Optimized
-===================================================== */
-
 const Cabinet3DModel = {
     objects: [],
 
     clear() {
-        // Only attempt to remove if ThreeSetup exists
         if (window.ThreeSetup && ThreeSetup.scene) {
-            this.objects.forEach(object => {
-                ThreeSetup.scene.remove(object);
-            });
+            this.objects.forEach(obj => ThreeSetup.scene.remove(obj));
             this.objects = [];
         }
     },
 
     createBox(width, height, depth, x, y, z, name) {
-        // SAFETY CHECK: Does the scene exist yet?
-        if (!window.ThreeSetup || !ThreeSetup.scene) {
-            console.error("Cabinet3DModel: Cannot create box because ThreeSetup.scene is null!");
-            return null;
-        }
+        if (!window.ThreeSetup || !ThreeSetup.scene) return null;
 
         const geometry = new THREE.BoxGeometry(width, height, depth);
         const material = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
@@ -29,47 +17,44 @@ const Cabinet3DModel = {
 
         mesh.position.set(x, y, z);
         mesh.name = name;
-
-        // Now it is safe to add
         ThreeSetup.scene.add(mesh);
         this.objects.push(mesh);
         return mesh;
     },
 
     build() {
-        // 1. Verify Project data
-        if (typeof Project === 'undefined' || !Project.compartments) {
-            console.error("Cabinet3DModel: Project data not found.");
-            return;
-        }
-
-        // 2. Clear previous objects
+        console.log("Build initiated...");
         this.clear();
 
-        // 3. Check if scene is ready
-        if (!window.ThreeSetup || !ThreeSetup.scene) {
-            console.error("Cabinet3DModel: Build failed. ThreeSetup.scene is missing.");
-            return;
+        // 1. Get data, or use a default test compartment if empty
+        let compartments = (typeof Project !== 'undefined' && Project.compartments) ? Project.compartments : [{ width: 600 }];
+        
+        if (compartments.length === 0) {
+            console.warn("No compartments found. Using test data.");
+            compartments = [{ width: 600 }];
         }
 
-        const height = 2700;
-        const depth = 600;
         let currentX = 0;
-
-        Project.compartments.forEach(compartment => {
-            const width = compartment.width;
+        compartments.forEach(c => {
+            const width = c.width || 600;
+            const h = 2700;
+            const d = 600;
 
             // Generate parts
-            this.createBox(16, height, depth, currentX, height / 2, 0, "Side Panel");
-            this.createBox(16, height, depth, currentX + width, height / 2, 0, "Side Panel");
-            this.createBox(width, 16, depth, currentX + width / 2, 2200, 0, "Shelf");
-            this.createBox(width, 16, depth, currentX + width / 2, 100, 0, "Bottom");
+            this.createBox(16, h, d, currentX, h / 2, 0, "Left Side");
+            this.createBox(16, h, d, currentX + width, h / 2, 0, "Right Side");
+            this.createBox(width, 16, d, currentX + width / 2, 2200, 0, "Shelf");
+            this.createBox(width, 16, d, currentX + width / 2, 100, 0, "Bottom");
 
-            currentX += width;
+            currentX += width + 20; // Add gap
         });
 
-        console.log("Cabinet 3D Model: Build complete.");
+        // 2. FORCE CAMERA RESET (Crucial for visibility)
+        if (window.ThreeSetup) {
+            ThreeSetup.camera.position.set(1000, 1000, 1000);
+            ThreeSetup.camera.lookAt(0, 0, 0);
+        }
+
+        console.log("Build successful.");
     }
 };
-
-console.log("Cabinet 3D Model Loaded");

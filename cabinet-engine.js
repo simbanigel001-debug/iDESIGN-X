@@ -1,34 +1,11 @@
 /* =====================================================
    Cabinet Studio
-   Cabinet Calculation Engine
-   Milestone 2
+   Engineering Cabinet Engine
+   Milestone 4
 ===================================================== */
 
 
 const CabinetEngine = {
-
-
-    CONSTANTS:{
-
-
-        HEIGHT:2700,
-
-        DEPTH:600,
-
-        PLINTH:100,
-
-        SHELF_ALLOWANCE:32,
-
-        SHELF_DEPTH:584,
-
-
-        MAX_SHELF_SPAN:1000
-
-
-    },
-
-
-
 
 
 
@@ -43,9 +20,24 @@ const CabinetEngine = {
             compartment => {
 
 
-                this.generateCompartment(
-                    project,
+                const sections =
+                this.prepareSections(
                     compartment
+                );
+
+
+
+                sections.forEach(
+                    section=>{
+
+
+                        this.generateCabinet(
+                            project,
+                            section
+                        );
+
+
+                    }
                 );
 
 
@@ -66,7 +58,53 @@ const CabinetEngine = {
 
 
 
-    generateCompartment(project,compartment){
+
+    prepareSections(compartment){
+
+
+
+        const split =
+
+        EngineeringRules
+        .calculateCabinetSplit(
+            compartment.width
+        );
+
+
+
+
+        return split.map(width=>{
+
+
+            return {
+
+
+                ...compartment,
+
+                width:width
+
+
+            };
+
+
+        });
+
+
+
+    },
+
+
+
+
+
+
+
+
+
+    generateCabinet(
+        project,
+        compartment
+    ){
 
 
 
@@ -75,18 +113,11 @@ const CabinetEngine = {
 
 
 
-        /*
-            Every compartment
-            receives side panels
-        */
+        const shelfWidth =
 
-
-        this.addPart(
-            project,
-            "Side Panel",
-            this.CONSTANTS.HEIGHT,
-            this.CONSTANTS.DEPTH,
-            2
+        EngineeringRules
+        .shelfLength(
+            width
         );
 
 
@@ -94,10 +125,24 @@ const CabinetEngine = {
 
 
 
-        const shelfLength =
-        width -
-        this.CONSTANTS.SHELF_ALLOWANCE;
+        /*
+            SIDE PANELS
+        */
 
+
+        this.addPart(
+
+            project,
+
+            "Side Panel",
+
+            2700,
+
+            600,
+
+            2
+
+        );
 
 
 
@@ -105,7 +150,7 @@ const CabinetEngine = {
 
 
         /*
-            Internal plinth
+            PLINTH
         */
 
 
@@ -115,9 +160,9 @@ const CabinetEngine = {
 
             "Internal Plinth",
 
-            shelfLength,
+            shelfWidth,
 
-            this.CONSTANTS.PLINTH,
+            100,
 
             1
 
@@ -129,13 +174,6 @@ const CabinetEngine = {
 
 
 
-
-
-        /*
-            Cabinet Type Logic
-        */
-
-
         switch(
             compartment.type
         ){
@@ -143,10 +181,9 @@ const CabinetEngine = {
 
             case "hanging":
 
-                this.generateHanging(
+                this.hanging(
                     project,
-                    compartment,
-                    shelfLength
+                    shelfWidth
                 );
 
             break;
@@ -155,35 +192,23 @@ const CabinetEngine = {
 
             case "folding":
 
-                this.generateFolding(
+                this.folding(
                     project,
-                    compartment,
-                    shelfLength
+                    shelfWidth
                 );
 
             break;
-
 
 
 
             case "open":
 
-                this.generateOpen(
+                this.open(
                     project,
-                    compartment,
-                    shelfLength
+                    shelfWidth
                 );
 
             break;
-
-
-
-            default:
-
-                console.warn(
-                    "Unknown compartment type"
-                );
-
 
 
         }
@@ -193,19 +218,31 @@ const CabinetEngine = {
 
 
 
-        /*
-            Doors
-        */
 
 
         if(
             compartment.hasDoors
         ){
 
-            this.generateDoor(
+
+            this.addPart(
+
                 project,
-                compartment
+
+                "Door",
+
+                EngineeringRules
+                .doorWidth(
+                    width
+                ),
+
+                EngineeringRules
+                .doorHeight(),
+
+                1
+
             );
+
 
         }
 
@@ -214,20 +251,22 @@ const CabinetEngine = {
 
 
 
-        /*
-            Drawers
-        */
-
 
         if(
             compartment.drawers.enabled
         ){
 
-            this.generateDrawers(
+
+            this.drawers(
+
                 project,
+
                 compartment,
-                shelfLength
+
+                shelfWidth
+
             );
+
 
         }
 
@@ -243,63 +282,45 @@ const CabinetEngine = {
 
 
 
-    generateHanging(
+    hanging(
         project,
-        compartment,
-        shelfLength
+        width
     ){
 
 
 
-        /*
-            Top shelf
-        */
+        [
 
+            "Top Shelf",
 
-        this.addShelf(
-            project,
-            shelfLength,
-            "Top Shelf"
-        );
+            "Bottom Shelf",
 
+            "Inner Shelf",
 
-
-        /*
-            Bottom shelf
-        */
-
-
-        this.addShelf(
-            project,
-            shelfLength,
-            "Bottom Shelf"
-        );
-
-
-
-        /*
-            Inner shelf
-        */
-
-
-        this.addShelf(
-            project,
-            shelfLength,
-            "Inner Shelf"
-        );
-
-
-
-        /*
-            Hanging shelf
-        */
-
-
-        this.addShelf(
-            project,
-            shelfLength,
             "Hanging Shelf"
-        );
+
+        ]
+        .forEach(name=>{
+
+
+            this.addPart(
+
+                project,
+
+                name,
+
+                width,
+
+                584,
+
+                1
+
+            );
+
+
+        });
+
+
 
 
 
@@ -309,7 +330,7 @@ const CabinetEngine = {
 
             "Hanging Rail",
 
-            shelfLength,
+            width,
 
             40,
 
@@ -329,18 +350,11 @@ const CabinetEngine = {
 
 
 
-    generateFolding(
+    folding(
         project,
-        compartment,
-        shelfLength
+        width
     ){
 
-
-
-        /*
-            Folding cabinet:
-            standard 8 shelves
-        */
 
 
         for(
@@ -350,13 +364,17 @@ const CabinetEngine = {
         ){
 
 
-            this.addShelf(
+            this.addPart(
 
                 project,
 
-                shelfLength,
+                "Folding Shelf",
 
-                "Folding Shelf"
+                width,
+
+                584,
+
+                1
 
             );
 
@@ -375,50 +393,10 @@ const CabinetEngine = {
 
 
 
-    generateOpen(
+    open(
         project,
-        compartment,
-        shelfLength
+        width
     ){
-
-
-
-        this.addShelf(
-
-            project,
-
-            shelfLength,
-
-            "Open Shelf"
-
-        );
-
-
-    },
-
-
-
-
-
-
-
-
-
-    generateDoor(
-        project,
-        compartment
-    ){
-
-
-        let doorWidth =
-        compartment.width - 4;
-
-
-
-        let doorHeight =
-        this.CONSTANTS.HEIGHT -
-        this.CONSTANTS.PLINTH -
-        4;
 
 
 
@@ -426,11 +404,11 @@ const CabinetEngine = {
 
             project,
 
-            "Door",
+            "Open Shelf",
 
-            doorWidth,
+            width,
 
-            doorHeight,
+            584,
 
             1
 
@@ -447,16 +425,37 @@ const CabinetEngine = {
 
 
 
-    generateDrawers(
+    drawers(
         project,
         compartment,
-        shelfLength
+        shelfWidth
     ){
 
 
 
-        const drawerWidth =
-        shelfLength - 60;
+        const faceWidth =
+
+        EngineeringRules
+        .drawerFaceWidth(
+            compartment.width
+        );
+
+
+
+
+
+        const faceHeight =
+
+        EngineeringRules
+        .drawerFaceHeight(
+
+            compartment.drawers.quantity,
+
+            compartment.drawers.profile
+
+        );
+
+
 
 
 
@@ -476,13 +475,14 @@ const CabinetEngine = {
 
                 "Drawer Front",
 
-                drawerWidth,
+                faceWidth,
 
-                120,
+                faceHeight,
 
                 1
 
             );
+
 
 
 
@@ -502,13 +502,14 @@ const CabinetEngine = {
 
 
 
+
             this.addPart(
 
                 project,
 
                 "Drawer Bottom",
 
-                drawerWidth-32,
+                shelfWidth-32,
 
                 450,
 
@@ -519,39 +520,6 @@ const CabinetEngine = {
 
         }
 
-
-
-    },
-
-
-
-
-
-
-
-
-
-    addShelf(
-        project,
-        width,
-        name
-    ){
-
-
-
-        this.addPart(
-
-            project,
-
-            name,
-
-            width,
-
-            this.CONSTANTS.SHELF_DEPTH,
-
-            1
-
-        );
 
 
     },
@@ -594,10 +562,6 @@ const CabinetEngine = {
 
 
 
-
-
-
-
 };
 
 
@@ -605,5 +569,5 @@ const CabinetEngine = {
 
 
 console.log(
-    "Cabinet Engine Loaded"
+    "Engineering Cabinet Engine Loaded"
 );

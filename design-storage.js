@@ -5,8 +5,8 @@
 
 const DesignStorage = {
 
-    // Save the project to the browser's local memory
-    save(project) {
+    // Renamed to saveProject to match your HTML button
+    saveProject(project) {
         try {
             const data = JSON.stringify(project);
             localStorage.setItem("CabinetStudioProject", data);
@@ -18,8 +18,8 @@ const DesignStorage = {
         }
     },
 
-    // Load the project from the browser's local memory
-    load() {
+    // Renamed to loadProject to avoid future errors
+    loadProject() {
         try {
             const data = localStorage.getItem("CabinetStudioProject");
             if (!data) {
@@ -33,12 +33,6 @@ const DesignStorage = {
             console.error("DesignStorage: Failed to load project.", error);
             return null;
         }
-    },
-
-    // Clear saved project
-    clear() {
-        localStorage.removeItem("CabinetStudioProject");
-        console.log("DesignStorage: Project data cleared.");
     }
 
 };

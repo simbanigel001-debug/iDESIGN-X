@@ -405,9 +405,7 @@ const CabinetEngine = {
 
 
 
-        const faceHeight =
-
-        EngineeringRules
+        const faceHeight = EngineeringRules
         .drawerFaceHeight(
 
             compartment.drawers.quantity,

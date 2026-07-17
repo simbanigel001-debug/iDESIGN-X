@@ -238,22 +238,34 @@ const PreviewEngine = {
         ()=>{
 
 
-            App.notify(
-
-            `Compartment ${index+1} selected`
-
-            );
+            box.onclick =
+()=>{
 
 
-        };
+    document.dispatchEvent(
+
+        new CustomEvent(
+            "compartmentSelected",
+            {
+
+                detail:{
+
+                    compartment:
+                    compartment,
+
+                    index:
+                    index
+
+                }
+
+            }
+
+        )
+
+    );
 
 
-
-        return box;
-
-
-
-    },
+};
 
 
 

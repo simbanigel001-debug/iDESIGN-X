@@ -1,334 +1,84 @@
+preview-engine.js
 /* =====================================================
    Cabinet Studio
-   Visual Preview Engine
-   Milestone 5
+   Preview Engine V2
+   NOTE:
+   This is a starter scaffold for the rebuilt engine.
+   It is intentionally complete and syntactically valid.
 ===================================================== */
 
-
 const PreviewEngine = {
+    canvas: null,
 
-
-
-    init(){
-
-
-        this.canvas =
-        document.querySelector(
-            ".design-board"
-        );
-
-
+    init() {
+        this.canvas = document.querySelector(".design-board");
         this.render();
-
-
     },
 
-
-
-
-
-
-
-
-
-    render(){
-
-
-        if(
-            !this.canvas
-        ){
-
-            return;
-
-        }
-
-
+    render() {
+        if (!this.canvas) return;
 
         this.canvas.innerHTML = "";
 
-
-
-        if(
-            Project.compartments.length===0
-        ){
-
-
-            this.showEmpty();
-
-            return;
-
-
+        if (!window.Project || !Array.isArray(Project.compartments) || Project.compartments.length === 0) {
+            return this.showEmpty();
         }
 
+        const wardrobe = document.createElement("div");
+        wardrobe.className = "wardrobe-preview";
 
+        Project.compartments.forEach((compartment, index) => {
+            wardrobe.appendChild(this.createCompartment(compartment, index));
+        });
 
-
-        const wardrobe =
-        document.createElement(
-            "div"
-        );
-
-
-
-        wardrobe.className =
-        "wardrobe-preview";
-
-
-
-
-
-        Project.compartments
-        .forEach(
-            (compartment,index)=>{
-
-
-                wardrobe.appendChild(
-
-                    this.createCompartment(
-
-                        compartment,
-
-                        index
-
-                    )
-
-                );
-
-
-            }
-        );
-
-
-
-  console.log("Checking wardrobe variable:", wardrobe); // Add this line
-
-        this.canvas.appendChild(
-            wardrobe
-        );
-
-
-
+        this.canvas.appendChild(wardrobe);
     },
 
+    createCompartment(compartment, index) {
+        const box = document.createElement("div");
+        box.className = "preview-compartment";
+        box.style.width = Math.max(120, (compartment.width || 600) / 5) + "px";
 
+        const drawers = (compartment.drawers && compartment.drawers.enabled)
+            ? `<div class="drawer-stack">${
+                Array(compartment.drawers.quantity || 0)
+                    .fill("<div class='drawer'></div>")
+                    .join("")
+              }</div>`
+            : "";
 
-
-
-
-
-
-
-    createCompartment(
-        compartment,
-        index
-    ){
-
-
-        const box =
-        document.createElement(
-            "div"
-        );
-
-
-
-        box.className =
-        "preview-compartment";
-
-
-
-
-        box.style.width =
-
-        Math.max(
-            120,
-            compartment.width / 5
-        )
-        +"px";
-
-
-
-
+        const rail = compartment.type === "hanging"
+            ? "<div class='rail'></div>"
+            : "";
 
         box.innerHTML = `
-
-
-        <div class="compartment-title">
-
-            ${compartment.type}
-
-        </div>
-
-
-
-        <div class="cabinet-body">
-
-
-
-        ${
-            compartment.type==="hanging"
-
-            ?
-
-            `
-
-            <div class="rail">
-            ─────────
+            <div class="compartment-title">${compartment.type || "Cabinet"}</div>
+            <div class="cabinet-body">
+                ${rail}
+                ${drawers}
             </div>
-
-            `
-
-            :
-
-            ""
-
-        }
-
-
-
-
-
-        ${
-            compartment.drawers.enabled
-
-            ?
-
-            `
-
-            <div class="drawer-stack">
-
-            ${
-                Array(
-                    compartment.drawers.quantity
-                )
-                .fill(
-                    "<div class='drawer'></div>"
-                )
-                .join("")
-            }
-
-            </div>
-
-            `
-
-            :
-
-            ""
-
-        }
-
-
-
-
-        </div>
-
-
-
-        <div class="dimension">
-
-        ${compartment.width}mm
-
-        </div>
-
-
+            <div class="dimension">${compartment.width || 0} mm</div>
         `;
 
+        box.addEventListener("click", () => {
+            document.dispatchEvent(new CustomEvent("compartmentSelected", {
+                detail: { compartment, index }
+            }));
+        });
 
+        return box;
+    },
 
-
-        box.onclick =
-        ()=>{
-
-
-            box.onclick =
-()=>{
-
-
-    document.dispatchEvent(
-
-        new CustomEvent(
-            "compartmentSelected",
-            {
-
-                detail:{
-
-                    compartment:
-                    compartment,
-
-                    index:
-                    index
-
-                }
-
-            }
-
-        )
-
-    );  //
-
-
-},
-         
-
-        
-
-
-
-
-
-
-
-    showEmpty()
-
-
-
+    showEmpty() {
         this.canvas.innerHTML = `
-
-
-        <div class="empty-state">
-
-
-        <div class="cube">
-        ◇
-        </div>
-
-
-        <h3>
-        Workspace Ready
-        </h3>
-
-
-        <p>
-        Add compartments to begin designing.
-        </p>
-
-
-        </div>
-
-
+            <div class="empty-state">
+                <div class="cube">◇</div>
+                <h3>Workspace Ready</h3>
+                <p>Add compartments to begin designing.</p>
+            </div>
         `;
-
-
     }
-
-
-
-
-
-},
-
-
-
-
-
-
 };
 
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
+document.addEventListener("DOMContentLoaded", () => PreviewEngine.init());
 
-
-    PreviewEngine.init();
-
-
-});

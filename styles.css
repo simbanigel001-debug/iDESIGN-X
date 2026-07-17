@@ -1013,3 +1013,32 @@ button {
 
 
 }
+/* Fix the header button layout */
+.toolbar-actions {
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to move to a new line if there isn't room */
+    gap: 10px;       /* Adds space between buttons */
+    padding: 10px;
+    align-items: center;
+}
+
+/* Give buttons a consistent, clean look */
+.toolbar-actions button {
+    background-color: #2c3e50; /* Dark blue-grey theme */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* Change color when hovering */
+.toolbar-actions button:hover {
+    background-color: #34495e;
+}
+
+/* Ensure 3D buttons (the new ones) look like the others */
+.toolbar-actions button.primary {
+    background-color: #3498db; /* Blue for primary actions */
+}

@@ -468,7 +468,45 @@ Top
 <div id="threeViewer"></div>
 
 </div>
+<select onchange="Material3DSystem.apply(this.value)">
 
+
+<option value="whiteMatt">
+
+White Matt
+
+</option>
+
+
+<option value="blackMatt">
+
+Black Matt
+
+</option>
+
+
+<option value="oakWood">
+
+Oak Wood
+
+</option>
+
+
+<option value="walnut">
+
+Walnut
+
+</option>
+
+
+<option value="glossWhite">
+
+Gloss White
+
+</option>
+
+
+</select>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
@@ -477,6 +515,7 @@ Top
 <script src="3d-door-system.js"></script>
 <script src="3d-shelf-system.js"></script>
 <script src="3d-camera-controls.js"></script>
+<script src="3d-material-system.js"></script>
 <script src="data-model.js"></script>
 <script src="engineering-rules.js"></script>
 <script src="engineering-validator.js"></script>

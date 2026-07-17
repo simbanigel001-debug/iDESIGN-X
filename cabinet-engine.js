@@ -220,52 +220,13 @@ const CabinetEngine = {
 
 
 
-        if(
-            compartment.hasDoors
-        ){
+        CabinetIntegration.applyAccessories(
 
+    project,
 
-            this.addPart(
+    compartment
 
-                project,
-
-                "Door",
-
-                EngineeringRules
-                .doorWidth(
-                    width
-                ),
-
-                EngineeringRules
-                .doorHeight(),
-
-                1
-
-            );
-
-
-        }
-
-
-
-
-
-
-
-        if(
-            compartment.drawers.enabled
-        ){
-
-
-            this.drawers(
-
-                project,
-
-                compartment,
-
-                shelfWidth
-
-            );
+);
 
 
         }

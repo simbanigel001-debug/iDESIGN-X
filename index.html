@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cabinet Studio</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- TOP TOOLBAR -->
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="brand-icon">▣</div>
+            <div>
+                <h1>Cabinet Studio</h1>
+                <span>Engineering Workspace</span>
+            </div>
+        </div>
+
+
+        <div class="toolbar-actions">
+
+            <button class="tool-btn" id="newProjectBtn">
+                New
+            </button>
+
+            <button class="tool-btn" id="saveBtn">
+                Save
+            </button>
+
+            <button class="tool-btn primary" id="generateBtn">
+                Generate
+            </button>
+
+            <button class="icon-btn" id="themeBtn">
+                ◐
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN APPLICATION AREA -->
+    <main class="workspace">
+
+
+        <!-- LEFT SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="panel-title">
+                PROJECT
+            </div>
+
+
+            <nav class="menu">
+
+                <button class="menu-item active">
+                    <span>⌂</span>
+                    Dashboard
+                </button>
+
+
+                <button class="menu-item">
+                    <span>▤</span>
+                    Cabinets
+                </button>
+
+
+                <button class="menu-item">
+                    <span>□</span>
+                    Compartments
+                </button>
+
+
+                <button class="menu-item">
+                    <span>⚙</span>
+                    Settings
+                </button>
+
+
+            </nav>
+
+
+
+            <div class="sidebar-bottom">
+
+                <div class="connection">
+
+                    <span class="status-dot"></span>
+
+                    System Ready
+
+                </div>
+
+            </div>
+
+
+        </aside>
+
+
+
+
+
+        <!-- CENTER WORKSPACE -->
+        <section class="canvas-area">
+
+
+            <div class="canvas-header">
+
+                <h2>
+                    Design Workspace
+                </h2>
+
+
+                <button id="commandBtn">
+                    Command Palette
+                    <span>
+                        Ctrl + K
+                    </span>
+                </button>
+
+
+            </div>
+
+
+
+            <div class="design-board">
+
+
+                <div class="empty-state">
+
+
+                    <div class="cube">
+                        ◇
+                    </div>
+
+
+                    <h3>
+                        Workspace Ready
+                    </h3>
+
+
+                    <p>
+                        Start designing your cabinet system.
+                    </p>
+
+
+                    <button id="startBtn">
+                        Create Project
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- RIGHT INSPECTOR -->
+        <aside class="inspector">
+
+
+            <div class="panel-title">
+                INSPECTOR
+            </div>
+
+
+            <div class="property-card">
+
+
+                <label>
+                    Project
+                </label>
+
+
+                <div class="value">
+                    Untitled Project
+                </div>
+
+
+            </div>
+
+
+
+            <div class="property-card">
+
+
+                <label>
+                    Height
+                </label>
+
+
+                <div class="value">
+                    2700 mm
+                </div>
+
+
+            </div>
+
+
+
+            <div class="property-card">
+
+
+                <label>
+                    Depth
+                </label>
+
+
+                <div class="value">
+                    600 mm
+                </div>
+
+
+            </div>
+
+
+
+            <div class="property-card">
+
+
+                <label>
+                    Material
+                </label>
+
+
+                <div class="value">
+                    Melamine
+                </div>
+
+
+            </div>
+
+
+        </aside>
+
+
+
+    </main>
+
+
+
+
+
+    <!-- STATS PANEL -->
+
+    <section class="stats">
+
+
+        <div class="stat-card">
+
+            <span>
+                Cabinets
+            </span>
+
+            <strong id="cabinetCount">
+                0
+            </strong>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Parts
+            </span>
+
+            <strong id="partCount">
+                0
+            </strong>
+
+        </div>
+
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Sheets
+            </span>
+
+            <strong id="sheetCount">
+                0
+            </strong>
+
+        </div>
+
+
+
+
+        <div class="stat-card">
+
+            <span>
+                Status
+            </span>
+
+            <strong class="green">
+                Ready
+            </strong>
+
+        </div>
+
+
+    </section>
+
+
+
+
+
+    <!-- COMMAND PALETTE -->
+
+    <div id="commandPalette" class="command hidden">
+
+
+        <div class="command-box">
+
+
+            <input 
+                id="commandInput"
+                placeholder="Type a command..."
+            >
+
+
+
+            <div class="commands">
+
+
+                <button>
+                    Create Cabinet
+                </button>
+
+
+                <button>
+                    Generate Cutting List
+                </button>
+
+
+                <button>
+                    Export CSV
+                </button>
+
+
+                <button>
+                    Open Settings
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div id="notifications"></div>
+
+
+
+
+
+    <!-- STATUS BAR -->
+
+    <footer class="statusbar">
+
+
+        <div>
+            Version 1.0
+        </div>
+
+
+        <div>
+            Cabinet Engine Offline
+        </div>
+
+
+        <div>
+            © Cabinet Studio
+        </div>
+
+
+    </footer>
+
+
+
+</div>
+
+
+
+<script src="app.js"></script>
+
+</body>
+</html>

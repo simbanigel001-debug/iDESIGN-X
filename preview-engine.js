@@ -323,7 +323,7 @@ const PreviewEngine = {
 
 
 document.addEventListener(
-"DOMContentLoaded",
+DOMContentLoaded,
 ()=>{
 
 

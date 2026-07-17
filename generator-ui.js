@@ -7,328 +7,78 @@
 
 const GeneratorUI = {
 
-
-
     init(){
-
-
         this.createOutputPanel();
-
-
         this.bind();
-
-
     },
-
-
-
-
-
-
-
-
 
     bind(){
-
-
         document
-        .getElementById(
-            "generateBtn"
-        )
-        .addEventListener(
-            "click",
-            ()=>this.generate()
-        );
-
-
+        .getElementById("generateBtn")
+        .addEventListener("click", () => this.generate());
     },
-
-
-
-
-
-
-
-
 
     generate(){
 
-
-
-        if(
-            Project.compartments.length === 0
-        ){
-
-
-            App.notify(
-                "Add a compartment first"
-            );
-
-
+        if(Project.compartments.length === 0){
+            App.notify("Add a compartment first");
             return;
-
-
         }
 
+        const parts = CabinetEngine.generate(Project);
 
+        const report = ProductionOutput.generate(Project);
+        ProductionOutput.display(report);
 
+        // Fixed: Now correctly passing 'parts' to the render function
+        this.render(parts);
 
-
-
-        const parts =
-
-        CabinetEngine.generate(
-            Project
-        );
-
-
-
-
-
-
-        const report =
-
-ProductionOutput.generate(
-
-    Project
-
-);
-
-
-ProductionOutput.display(
-
-    report
-
-);
-
-
-
-
-
-
-        this.render(
-            list
-        );
-
-
-
-
-
-        App.notify(
-            "Cutting list generated"
-        );
-
-
-
+        App.notify("Cutting list generated");
     },
-
-
-
-
-
-
-
-
 
     createOutputPanel(){
+        const canvas = document.querySelector(".canvas-area");
+        const panel = document.createElement("div");
 
-
-
-        const canvas =
-
-        document.querySelector(
-            ".canvas-area"
-        );
-
-
-
-
-        const panel =
-
-        document.createElement(
-            "div"
-        );
-
-
-
-        panel.id =
-        "cuttingOutput";
-
-
-
-        panel.className =
-        "cutting-output";
-
-
+        panel.id = "cuttingOutput";
+        panel.className = "cutting-output";
 
         panel.innerHTML = `
-
-
-        <h3>
-        Cutting List
-        </h3>
-
-
-        <div id="outputTable">
-
-        No parts generated
-
-        </div>
-
-
+            <h3>Cutting List</h3>
+            <div id="outputTable">No parts generated</div>
         `;
 
-
-
-        canvas.appendChild(
-            panel
-        );
-
-
-
+        canvas.appendChild(panel);
     },
 
-
-
-
-
-
-
-
-
     render(parts){
-
-
-
-        const table =
-
-        document.getElementById(
-            "outputTable"
-        );
-
-
-
-
+        const table = document.getElementById("outputTable");
         table.innerHTML = "";
 
-
-
-
-
-        const header =
-
-        document.createElement(
-            "div"
-        );
-
-
-        header.className =
-        "cut-row header";
-
-
-
+        const header = document.createElement("div");
+        header.className = "cut-row header";
         header.innerHTML = `
-
-
-        <span>
-        Part
-        </span>
-
-
-        <span>
-        Size
-        </span>
-
-
-        <span>
-        Qty
-        </span>
-
-
+            <span>Part</span>
+            <span>Size</span>
+            <span>Qty</span>
         `;
 
+        table.appendChild(header);
 
-
-        table.appendChild(
-            header
-        );
-
-
-
-
-
-
-
-
-        parts.forEach(part=>{
-
-
-
-            const row =
-
-            document.createElement(
-                "div"
-            );
-
-
-
-            row.className =
-            "cut-row";
-
-
-
+        parts.forEach(part => {
+            const row = document.createElement("div");
+            row.className = "cut-row";
             row.innerHTML = `
-
-
-            <span>
-            ${part.name}
-            </span>
-
-
-            <span>
-            ${part.width}
-            x
-            ${part.height}
-            </span>
-
-
-            <span>
-            ${part.quantity}
-            </span>
-
-
+                <span>${part.name}</span>
+                <span>${part.width} x ${part.height}</span>
+                <span>${part.quantity}</span>
             `;
-
-
-
-            table.appendChild(
-                row
-            );
-
-
-
+            table.appendChild(row);
         });
-
-
-
     }
-
-
-
-
 
 };
 
-
-
-
-
-document.addEventListener(
-"DOMContentLoaded",
-()=>{
-
-
+document.addEventListener("DOMContentLoaded", () => {
     GeneratorUI.init();
-
-
 });

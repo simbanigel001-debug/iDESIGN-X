@@ -45,7 +45,13 @@ const CabinetCanvas = {
 
 
 
+bind(){
 
+    console.log(
+        "Canvas events ready"
+    );
+
+}
     render(){
 
 

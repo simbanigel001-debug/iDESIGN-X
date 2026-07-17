@@ -100,6 +100,7 @@ const PreviewEngine = {
 
 
 
+  console.log("Checking wardrobe variable:", wardrobe); // Add this line
 
         this.canvas.appendChild(
             wardrobe

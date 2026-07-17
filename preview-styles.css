@@ -300,6 +300,15 @@
 
     .preview-compartment {
 
+       .preview-compartment.selected {
+
+    outline:
+    2px solid var(--accent);
+
+    transform:
+    translateY(-8px);
+
+}
 
         flex-shrink:0;
 

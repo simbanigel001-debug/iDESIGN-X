@@ -1,10 +1,9 @@
-/* =====================================================
-   Cabinet Studio
-   3D Camera Controls
-   Milestone 10
-===================================================== */
 
-
+/**
+ * ARCHITECTURAL BRIDGE
+ * Redirecting legacy reference to the new iDesign Registry.
+ */
+const ThreeSetup = window.iDesign.Engine;
 const CameraControls3D = {
 
 

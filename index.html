@@ -5,70 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabinet Studio</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ui-styles.css">
 </head>
 <body>
 
-    <div id="app">
-        <!-- Top Navigation -->
-        <header class="topbar">
-            <div class="brand">
-                <div class="brand-icon">📦</div>
-                <div>
-                    <h1>Cabinet Studio</h1>
-                    <span>Engineering Workspace</span>
-                </div>
+<div id="app">
+    <!-- TOP TOOLBAR -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">▣</div>
+            <div>
+                <h1>Cabinet Studio</h1>
+                <span>Engineering Workspace</span>
             </div>
-            <div class="toolbar-actions">
-                <button class="tool-btn" onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
-                <button class="tool-btn">Save Project</button>
-            </div>
-        </header>
+        </div>
 
-        <!-- Main Workspace -->
-        <main class="workspace">
-            <aside class="sidebar">
-                <div class="menu">
-                    <button class="menu-item">Cabinets</button>
-                    <button class="menu-item">Compartments</button>
-                    <button class="menu-item">Settings</button>
-                </div>
-            </aside>
+        <div class="toolbar-actions">
+            <button class="tool-btn" id="newProjectBtn">New</button>
+            <button class="tool-btn" id="saveBtn">Save</button>
+            <button class="tool-btn primary" id="generateBtn">Generate</button>
+            <button class="icon-btn" id="themeBtn">◐</button>
+            
+            <!-- Separated Buttons (Fixed nesting) -->
+            <button id="undoButton">Undo</button>
+            <button id="redoButton">Redo</button>
+            <button onclick="ProductionExport.exportCSV()">Export Cutting List</button>
+            <button onclick="DesignStorage.saveProject('My Wardrobe')">Save Project</button>
+            <button onclick="DesignStorage.getProjects()">Projects</button>
+            <button onclick="ProductionExport.exportSheets()">Export Sheets</button>
+        </div>
+    </header>
 
-            <section class="canvas-area">
-                <div class="canvas-header">
-                    <h2>Design Workspace</h2>
-                </div>
-                
-                <!-- This is where your 3D view lives -->
-                <div id="threeViewer"></div>
-                
-                <div class="design-board">
-                    <div class="empty-state">
-                        <div class="cube">🗄️</div>
-                        <p>Workspace Ready</p>
-                    </div>
-                </div>
-            </section>
-
-            <aside class="inspector">
-                <div class="panel-title">INSPECTOR</div>
-                <div class="property-card">
-                    <label>Project</label>
-                    <div class="value">Untitled Project</div>
-                </div>
-            </aside>
-        </main>
+    <!-- 3D GENERATION CONTROLS -->
+    <div class="toolbar-actions">
+        <button onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
+        <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
+        <button onclick="Interior3DSystem.build()">Generate Interior</button>
     </div>
-
-    <!-- Scripts: Note the order! -->
-    <!-- 1. Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     
-    <!-- 2. Core Logic (Ensure filenames match your files exactly) -->
-    <script src="three-setup.js"></script>
-    <script src="design-storage.js"></script> <!-- Keep only this one -->
-    <script src="cabinet-3d-model.js"></script>
-    <script src="app.js"></script>
+    <!-- MAIN APPLICATION AREA -->
+    <main class="workspace">
+        <aside class="sidebar">
+            <div class="panel-title">PROJECT</div>
+            <nav class="menu">
+                <button class="menu-item active"><span>⌂</span> Dashboard</button>
+                <button class="menu-item"><span>▤</span> Cabinets</button>
+                <button class="menu-item"><span>□</span> Compartments</button>
+                <button class="menu-item"><span>⚙</span> Settings</button>
+            </nav>
 
+            <button onclick="CameraControls3D.reset()">Reset View</button>
+            <button onclick="CameraControls3D.frontView()">Front</button>
+            <button onclick="CameraControls3D.sideView()">Side</button>
+            <button onclick="CameraControls3D.topView()">Top</button>
+
+            <div class="sidebar-bottom">
+                <div class="connection">
+                    <span class="status-dot"></span> System Ready
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER WORKSPACE -->
+        <section class="canvas-area">
+            <div class="canvas-header">
+                <h2>Design Workspace</h2>
+                <button id="commandBtn">Command Palette <span>Ctrl + K</span></button>
+            </div>
+            <div class="design-board">
+                <div class="empty-state">
+                    <div class="cube">◇</div>
+                    <div id="cuttingSheets"></div>
+                    <h3>Workspace Ready</h3>
+                    <p>Start designing your cabinet system.</p>
+                    <button id="startBtn">Create Project</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT INSPECTOR -->
+        <aside class="inspector">
+            <div class="panel-title">INSPECTOR</div>
+            <div class="property-card"><label>Project</label><div class="value">Untitled Project</div></div>
+            <div class="property-card"><label>Height</label><div class="value">2700 mm</div></div>
+            <div class="property-card"><label>Depth</label><div class="value">600 mm</div></div>
+            <div class="property-card"><label>Material</label><div class="value">Melamine</div></div>
+        </aside>
+    </main>
+
+    <!-- STATS PANEL -->
+    <section class="stats">
+        <div class="stat-card"><span>Cabinets</span><strong id="cabinetCount">0</strong></div>
+        <div class="stat-card"><span>Parts</span><strong id="partCount">0</strong></div>
+        <div class="stat-card"><span>Sheets</span><strong id="sheetCount">0</strong></div>
+        <div class="stat-card"><span>Status</span><strong class="green">Ready</strong></div>
+    </section>
+
+    <!-- MATERIAL SELECTOR -->
+    <select onchange="Material3DSystem.apply(this.value)">
+        <option value="whiteMatt">White Matt</option>
+        <option value="blackMatt">Black Matt</option>
+        <option value="oakWood">Oak Wood</option>
+        <option value="walnut">Walnut</option>
+        <option value="glossWhite">Gloss White</option>
+    </select>
+
+    <!-- SCRIPTS -->
+    <script src="data-model.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <script src="cabinet-3d-model.js"></script>
+    <script src="3d-door-system.js"></script>
+    <script src="3d-shelf-system.js"></script>
+    <script src="3d-camera-controls.js"></script>
+    <script src="3d-material-system.js"></script>
+    <script src="three-setup.js"></script>
+    <script src="engineering-rules.js"></script>
+    <script src="engineering-validator.js"></script>
+    <script src="door-engine.js"></script>
+    <script src="drawer-engine.js"></script>
+    <script src="cabinet-engine-integration.js"></script>
+    <script src="material-manager.js"></script>
+    <script src="production-output.js"></script>
+    <script src="sheet-manager.js"></script>
+    <script src="nesting-engine.js"></script>
+    <script src="cutting-layout.js"></script>
+    <script src="cutting-layout-integration.js"></script>
+    <script src="production-export.js"></script>
+    <script src="nesting-settings.js"></script>
+    <script src="cabinet-canvas.js"></script>
+    <script src="resize-handles.js"></script>
+    <script src="property-inspector.js"></script>
+    <script src="undo-redo-system.js"></script>
+    <script src="design-save-system.js"></script> <!-- Fixed typo here -->
+    <script src="design-storage.js"></script>
+    <script src="cutting-list.js"></script>
+    <script src="project-ui.js"></script>
+    <script src="generator-ui.js"></script>
+    <script src="preview-engine.js"></script>
+    <script src="dimension-system.js"></script>
+    <script src="interaction-system.js"></script>
+    <script src="layout-engine.js"></script>
+    <script src="layout-optimizer.js"></script>
+    <script src="auto-layout-ui.js"></script>
+    <script src="layout-preview-sync.js"></script>
+    <script src="cabinet-engine.js"></script>
+    <script src="app.js"></script>
+</div>
 </body>
 </html>

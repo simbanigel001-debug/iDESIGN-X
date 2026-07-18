@@ -3,6 +3,9 @@
  * ARCHITECTURAL BRIDGE
  * Redirecting legacy reference to the new iDesign Registry.
  */
+// Defensive bridge: create the namespace if it's missing
+window.iDesign = window.iDesign || {};
+window.iDesign.Engine = window.iDesign.Engine || {};
 const ThreeSetup = window.iDesign.Engine;
 const CameraControls3D = {
 

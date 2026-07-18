@@ -1,168 +1,49 @@
+/* =====================================================
+   SAFE CSS: This will not hide your UI
+===================================================== */
 :root {
     --bg-main: #0f1117;
     --bg-panel: #151923;
-    --bg-card: #1c2230;
     --border: rgba(255,255,255,0.08);
-    --text-primary: #f4f7fb;
-    --text-secondary: #9aa4b2;
-    --accent: #4f8cff;
-    --accent-hover: #6ba0ff;
-    --success: #35d07f;
-    --danger: #ff5d73;
-    --shadow: 0 20px 40px rgba(0,0,0,0.25);
-    --radius: 14px;
-    --transition: 0.25s ease;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-/* FIX: Changed height to min-height and enabled scrolling */
 body {
     background: var(--bg-main);
-    color: var(--text-primary);
+    color: white;
     min-height: 100vh;
-    overflow-y: auto; 
+    margin: 0;
+    font-family: sans-serif;
+    overflow-y: auto; /* Restores scrolling */
 }
 
 #app {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    height: 100vh; /* Keeps layout stable */
 }
 
-/* TOP BAR */
-.topbar {
-    height: auto; /* Allow height to expand for buttons */
-    min-height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 24px;
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.toolbar-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-}
-
-/* Button Styles */
-button {
-    border: none;
-    cursor: pointer;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    transition: var(--transition);
-    font-size: 12px;
-}
-
-button:hover {
-    background: #252d3d;
-    transform: translateY(-1px);
-}
-
-.tool-btn.primary {
-    background: var(--accent);
-}
-
-/* WORKSPACE */
+/* Fixes the blank page issue: ensure workspace expands */
 .workspace {
-    flex: 1;
     display: grid;
     grid-template-columns: 240px 1fr 300px;
-}
-
-/* FIX: Ensure sidebar is clickable */
-.sidebar {
-    background: var(--bg-panel);
-    border-right: 1px solid var(--border);
-    padding: 20px;
-    z-index: 10;
-    position: relative;
-}
-
-.inspector {
-    background: var(--bg-panel);
-    border-left: 1px solid var(--border);
-    padding: 20px;
-}
-
-/* Sidebar Menu */
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--text-secondary);
-    text-align: left;
-}
-
-.menu-item:hover, .menu-item.active {
-    background: rgba(79,140,255,0.15);
-    color: white;
-}
-
-/* CANVAS */
-.canvas-area {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-}
-
-.design-board {
     flex: 1;
-    min-height: 400px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: linear-gradient(145deg, #151923, #10131b);
-    display: grid;
-    place-items: center;
 }
 
-/* STATS */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+.canvas-area {
     padding: 20px;
-    background: var(--bg-panel);
-    border-top: 1px solid var(--border);
+    overflow-y: auto;
 }
 
-.stat-card {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 12px 18px;
+/* Keeps the viewer visible but not destructive */
+#threeViewer {
+    width: 100%;
+    height: 400px; 
+    background: #000;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    display: block;
 }
 
-/* MOBILE */
-@media(max-width: 900px) {
-    .workspace {
-        grid-template-columns: 70px 1fr;
-    }
-    .inspector {
-        display: none;
-    }
-}
+/* Original Sidebar/Panel Styles */
+.sidebar, .inspector { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; }
+.topbar { height: 72px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; }

@@ -1,54 +1,53 @@
 /**
- * ThreeEngine.js
- * The 3D Engine Service
+ * iDESIGN X | Core Engine
+ * Encapsulated 3D Engine. Prevents global pollution.
  */
+window.iDesign = window.iDesign || {};
 
-class ThreeEngine {
-    constructor(containerId) {
+iDesign.Engine = {
+    scene: null,
+    camera: null,
+    renderer: null,
+    container: null,
+
+    init: function(containerId) {
         this.container = document.getElementById(containerId);
-        this.scene = new THREE.Scene();
-        this.camera = null;
-        this.renderer = null;
-        
         if (!this.container) {
-            console.error(`[ThreeEngine] Container #${containerId} not found.`);
+            console.error("[iDesign.Engine] Container not found.");
             return;
         }
 
-        this.init();
-    }
-
-    init() {
-        // Setup Renderer
+        // Initialize Scene
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, this.container.clientWidth / this.container.clientHeight, 0.1, 1000);
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
         this.container.appendChild(this.renderer.domElement);
 
-        // Setup Camera
-        this.camera = new THREE.PerspectiveCamera(75, this.container.clientWidth / this.container.clientHeight, 0.1, 1000);
         this.camera.position.set(5, 5, 5);
         this.camera.lookAt(0, 0, 0);
 
-        // Setup Light
+        // Add Light
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(5, 5, 5);
         this.scene.add(light);
         this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-        // Animation Loop
         this.animate();
-        console.log("[ThreeEngine] Initialized Successfully");
-    }
+        console.log("[iDesign.Engine] System initialized.");
+    },
 
-    animate() {
+    animate: function() {
         requestAnimationFrame(() => this.animate());
         this.renderer.render(this.scene, this.camera);
     }
+};
 
-    addObject(mesh) {
-        this.scene.add(mesh);
+// Auto-initialize on load
+window.addEventListener('DOMContentLoaded', () => {
+    // Only init if the viewer exists
+    if(document.getElementById('threeViewer')) {
+        iDesign.Engine.init('threeViewer');
     }
-}
-
-// Global Export (The only global we will use)
-window.Engine = new ThreeEngine('viewport');
+});

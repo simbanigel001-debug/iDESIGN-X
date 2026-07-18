@@ -96,5 +96,16 @@ const CabinetEngine = {
     }
 
 }; // This closes the CabinetEngine object correctly
+// --- Initialize Global Engine ---
+window.iDesign = window.iDesign || {};
 
+window.iDesign.Engine = {
+    // 1. Create the Three.js scene here so Cabinet module can find it
+    scene: new THREE.Scene(),
+    
+    // 2. Attach your logic so it's accessible globally
+    logic: CabinetEngine 
+};
+
+console.log("[iDesign] Engine successfully initialized with global scene.");
 console.log("Engineering Cabinet Engine Loaded");

@@ -96,20 +96,34 @@ const CabinetEngine = {
     }
 
 }; // This closes the CabinetEngine object correctly
-// --- Initialize Global Engine ---
-window.iDesign = window.iDesign || {};
-
 window.iDesign.Engine = {
     scene: new THREE.Scene(),
-    // Add the camera here
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
+    // 1. Initialize the Renderer
+    renderer: new THREE.WebGLRenderer({ antialias: true }),
     logic: CabinetEngine
 };
 
-// Set initial camera position so it can see the cabinet
+// 2. Set up the Renderer
+window.iDesign.Engine.renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(window.iDesign.Engine.renderer.domElement);
+
+// 3. Set camera position
 window.iDesign.Engine.camera.position.set(0, 1, 5); 
 
-console.log("[iDesign] Engine successfully initialized with global scene and camera.");
+// 4. Create the Render Loop (The Heartbeat)
+function animate() {
+    requestAnimationFrame(animate);
+    window.iDesign.Engine.renderer.render(
+        window.iDesign.Engine.scene, 
+        window.iDesign.Engine.camera
+    );
+}
+
+// Start the loop
+animate();
+
+console.log("[iDesign] Engine fully initialized with renderer and animation loop.");
 
 console.log("[iDesign] Engine successfully initialized with global scene.");
 console.log("Engineering Cabinet Engine Loaded");

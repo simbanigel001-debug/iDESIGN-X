@@ -124,6 +124,11 @@ function animate() {
 animate();
 
 console.log("[iDesign] Engine fully initialized with renderer and animation loop.");
-
+// Style the canvas to sit behind your UI but be visible
+const canvas = window.iDesign.Engine.renderer.domElement;
+canvas.style.position = 'absolute';
+canvas.style.top = '0';
+canvas.style.left = '0';
+canvas.style.zIndex = '-1'; // Pushes it to the background
 console.log("[iDesign] Engine successfully initialized with global scene.");
 console.log("Engineering Cabinet Engine Loaded");

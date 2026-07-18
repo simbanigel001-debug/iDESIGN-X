@@ -70,21 +70,10 @@ body {
     width: 100%;
     height: 100%;
 }
-/* --- iDESIGN X | Structural Hooks --- */
-#threeViewer {
-    position: relative; /* Hooks into your existing layout */
-    width: 100%;
-    height: 100%;
-    min-height: 400px; /* Ensures space */
-    background: transparent; /* Allows your design to show through */
-}
-
-/* Ensure the canvas doesn't break the layout */
-#threeViewer canvas {
+/* Scoped container targeting */
+.viewport > canvas {
     display: block;
-    border-radius: inherit;
-}
-/* Ensure the canvas doesn't overflow */
-.viewport canvas {
-    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit; /* Inherits your design system's rounding */
 }

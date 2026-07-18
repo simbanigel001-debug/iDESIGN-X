@@ -20,3 +20,16 @@ window.iDesign = {
         this.isReady = true;
     }
 };
+// Central Log Manager
+window.iDesign.Log = (function() {
+    const DEBUG = true; // Set this to FALSE when you go to production
+
+    return {
+        info: function(msg) {
+            if (DEBUG) console.log(`[iDesign] ${msg}`);
+        },
+        error: function(msg) {
+            console.error(`[iDesign ERROR] ${msg}`);
+        }
+    };
+})();

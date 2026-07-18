@@ -1,50 +1,54 @@
-/* =====================================================
-   Three.js Initializer
-   Ensures ThreeSetup is available globally
-===================================================== */
+/**
+ * ThreeEngine.js
+ * The 3D Engine Service
+ */
 
-// 1. Declare the global object immediately so other files can find it
-window.ThreeSetup = {
-    scene: new THREE.Scene(),
-    camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 3000),
-    renderer: new THREE.WebGLRenderer({ antialias: true })
-};
+class ThreeEngine {
+    constructor(containerId) {
+        this.container = document.getElementById(containerId);
+        this.scene = new THREE.Scene();
+        this.camera = null;
+        this.renderer = null;
+        
+        if (!this.container) {
+            console.error(`[ThreeEngine] Container #${containerId} not found.`);
+            return;
+        }
 
-function initThree() {
-    const viewer = document.getElementById('threeViewer');
-    if (!viewer) {
-        console.error("ThreeSetup: #threeViewer div not found in HTML!");
-        return;
+        this.init();
     }
 
-    // Set background color
-    ThreeSetup.scene.background = new THREE.Color(0x151923);
+    init() {
+        // Setup Renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        this.container.appendChild(this.renderer.domElement);
 
-    // Setup Renderer
-    ThreeSetup.renderer.setSize(viewer.clientWidth, viewer.clientHeight);
-    viewer.appendChild(ThreeSetup.renderer.domElement);
+        // Setup Camera
+        this.camera = new THREE.PerspectiveCamera(75, this.container.clientWidth / this.container.clientHeight, 0.1, 1000);
+        this.camera.position.set(5, 5, 5);
+        this.camera.lookAt(0, 0, 0);
 
-    // Position Camera
-    ThreeSetup.camera.position.set(1000, 1000, 1000);
-    ThreeSetup.camera.lookAt(0, 0, 0);
+        // Setup Light
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        this.scene.add(light);
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-    // Add Lights (So the boxes are visible!)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    ThreeSetup.scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(1000, 1000, 1000);
-    ThreeSetup.scene.add(dirLight);
-
-    // Basic Animation Loop
-    function animate() {
-        requestAnimationFrame(animate);
-        ThreeSetup.renderer.render(ThreeSetup.scene, ThreeSetup.camera);
+        // Animation Loop
+        this.animate();
+        console.log("[ThreeEngine] Initialized Successfully");
     }
-    animate();
 
-    console.log("ThreeSetup: Scene, Camera, and Renderer initialized.");
+    animate() {
+        requestAnimationFrame(() => this.animate());
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    addObject(mesh) {
+        this.scene.add(mesh);
+    }
 }
 
-// Initialize on load
-window.addEventListener('DOMContentLoaded', initThree);
+// Global Export (The only global we will use)
+window.Engine = new ThreeEngine('viewport');

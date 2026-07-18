@@ -63,3 +63,15 @@ body {
     position: relative;
     overflow: hidden;
 }
+/* Ensure the Viewport container respects the layout */
+.viewport {
+    position: relative; /* Essential for 3D engine containment */
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ensure the canvas doesn't overflow */
+.viewport canvas {
+    display: block;
+}

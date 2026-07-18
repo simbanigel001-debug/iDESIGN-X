@@ -100,12 +100,16 @@ const CabinetEngine = {
 window.iDesign = window.iDesign || {};
 
 window.iDesign.Engine = {
-    // 1. Create the Three.js scene here so Cabinet module can find it
     scene: new THREE.Scene(),
-    
-    // 2. Attach your logic so it's accessible globally
-    logic: CabinetEngine 
+    // Add the camera here
+    camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
+    logic: CabinetEngine
 };
+
+// Set initial camera position so it can see the cabinet
+window.iDesign.Engine.camera.position.set(0, 1, 5); 
+
+console.log("[iDesign] Engine successfully initialized with global scene and camera.");
 
 console.log("[iDesign] Engine successfully initialized with global scene.");
 console.log("Engineering Cabinet Engine Loaded");

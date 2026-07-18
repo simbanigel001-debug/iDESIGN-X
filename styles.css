@@ -1,3 +1,6 @@
+/* =====================================================
+   Cabinet Studio - RESTORED DESIGN
+===================================================== */
 :root {
     --bg-main: #0f1117;
     --bg-panel: #151923;
@@ -6,114 +9,51 @@
     --text-primary: #f4f7fb;
     --text-secondary: #9aa4b2;
     --accent: #4f8cff;
+    --accent-hover: #6ba0ff;
+    --success: #35d07f;
+    --danger: #ff5d73;
+    --shadow: 0 20px 40px rgba(0,0,0,0.25);
+    --radius: 14px;
+    --transition: 0.25s ease;
 }
 
-/* Base resets */
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: Inter, -apple-system, sans-serif; }
 
-/* Page Setup: Enables Scrolling */
-body, html {
+/* FIX: Restored scrolling and min-height */
+body {
     background: var(--bg-main);
     color: var(--text-primary);
     min-height: 100vh;
-    overflow-y: auto; /* This allows the whole page to scroll */
+    overflow-y: auto; 
 }
 
 #app {
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
-}
-
-/* TOP BAR */
-.topbar {
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    background: var(--bg-panel);
-    border-bottom: 1px solid var(--border);
-}
-
-/* WORKSPACE LAYOUT */
-.workspace {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 240px 1fr 300px;
-}
-
-.sidebar, .inspector {
-    background: var(--bg-panel);
-    padding: 20px;
-    border-right: 1px solid var(--border);
-}
-
-.inspector {
-    border-right: none;
-    border-left: 1px solid var(--border);
-}
-
-.canvas-area {
-    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
-/* 3D VIEWER FIX: Ensures it is visible */
+/* --- YOUR ORIGINAL LAYOUT STYLING --- */
+.topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: var(--bg-panel); border-bottom: 1px solid var(--border); }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-icon { width: 42px; height: 42px; display: grid; place-items: center; background: var(--accent); border-radius: 12px; font-size: 22px; }
+.workspace { flex: 1; display: grid; grid-template-columns: 240px 1fr 300px; overflow: hidden; }
+.sidebar, .inspector { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; }
+.inspector { border-right: none; border-left: 1px solid var(--border); }
+.canvas-area { display: flex; flex-direction: column; }
+.design-board { flex: 1; margin: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(145deg, #151923, #10131b); display: grid; place-items: center; position: relative; }
+
+/* --- YOUR ORIGINAL UI COMPONENTS --- */
+.tool-btn { background: var(--bg-card); color: var(--text-primary); padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border); transition: var(--transition); cursor: pointer; }
+.menu-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border-radius: 10px; background: transparent; color: var(--text-secondary); border: none; cursor: pointer; }
+.menu-item:hover { background: rgba(79,140,255,0.15); color: white; }
+
+/* --- THE FIXES (Surgically added to make it work) --- */
 #threeViewer {
+    position: absolute;
+    inset: 0; /* Stretches to fill the design-board */
     width: 100%;
-    height: 400px; 
-    background: #000;
-    border-radius: 12px;
-    display: block;
-    border: 1px solid var(--border);
-}
-
-.design-board {
-    flex: 1;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    background: var(--bg-card);
-    display: grid;
-    place-items: center;
-    min-height: 200px;
-}
-
-/* BUTTONS & UI */
-button {
-    background: var(--bg-card);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover { 
-    background: #252d3d; 
-}
-
-.menu-item { 
-    width: 100%; 
-    text-align: left; 
-    margin-bottom: 8px; 
-    background: transparent;
-}
-
-.menu-item:hover {
-    background: rgba(79,140,255,0.15);
-}
-
-/* MOBILE RESPONSIVE */
-@media(max-width: 900px) {
-    .workspace { grid-template-columns: 70px 1fr; }
-    .inspector { display: none; }
+    height: 100%;
+    z-index: 5; /* Stays on top */
+    border-radius: var(--radius);
 }

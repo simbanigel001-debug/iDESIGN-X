@@ -28,31 +28,34 @@ iDesign.Cabinet = (function() {
         },
 
         // Inside iDesign.Cabinet
+// Inside iDesign.Cabinet
 generateGeometry: function(settings) {
-    // 1. Create dimensions (converting mm to standard units if needed)
-    // Here we divide by 1000 assuming 1 unit = 1 meter
+    // 1. Safety Check: Does the Engine and the Scene actually exist?
+    if (!window.iDesign.Engine || !window.iDesign.Engine.scene) {
+        console.error("[iDesign.Cabinet] Cannot build: Engine or Scene is not initialized yet.");
+        return; 
+    }
+
+    // 2. Create dimensions
     const w = settings.width / 1000;
     const h = settings.height / 1000;
     const d = settings.depth / 1000;
 
-    // 2. Create the box geometry
+    // 3. Create the box geometry
     const geometry = new THREE.BoxGeometry(w, h, d);
-
-    // 3. Create a basic material (Lambert responds to light)
     const material = new THREE.MeshLambertMaterial({ 
-        color: 0x8B4513, // Wood-like color
+        color: 0x8B4513, 
         wireframe: false 
     });
 
     // 4. Create the mesh
     const cabinetMesh = new THREE.Mesh(geometry, material);
-
-    // 5. Position the cabinet so it sits on the "floor" (y=0)
-    // Since BoxGeometry is centered, we lift it by half its height
     cabinetMesh.position.y = h / 2;
 
-    // 6. Add to the global scene provided by your Engine
-    if (window.iDesign.Engine && window.iDesign.Engine.scene) {
+    // 5. Add to scene
+    window.iDesign.Engine.scene.add(cabinetMesh);
+    console.log("[iDesign.Cabinet] Geometry successfully added to scene.");
+}
         window.iDesign.Engine.scene.add(cabinetMesh);
         console.log("[iDesign.Cabinet] Geometry added to scene.");
     } else {

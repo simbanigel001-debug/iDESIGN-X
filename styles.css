@@ -198,3 +198,21 @@ body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: v
     border-left: 1px solid #333;
     border-right: 1px solid #333;
 }
+/* Base Setup */
+body, html { margin: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; }
+
+/* The Grid Layout */
+#app {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Topbar takes required height, rest fills screen */
+    grid-template-columns: 300px 1fr 300px;
+    height: 100vh;
+}
+
+/* Header: This matches your existing 'topbar' class */
+.topbar { grid-column: 1 / -1; background: #1e1e1e; border-bottom: 1px solid #333; padding: 10px; }
+
+/* Content Grid: We will add these classes to your divs */
+.sidebar { background: #1a1a1a; border-right: 1px solid #333; padding: 20px; overflow-y: auto; }
+.canvas-area { background: #0a0a0a; position: relative; }
+.inspector { background: #1a1a1a; border-left: 1px solid #333; padding: 20px; overflow-y: auto; }

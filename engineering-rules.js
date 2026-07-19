@@ -281,7 +281,8 @@ const EngineeringRules = {
 
 };
 
-
+// Register this as a module so the Cabinet system can find it
+iDesign.register('Engineering', EngineeringRules);
 
 
 

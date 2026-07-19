@@ -21,7 +21,7 @@ const GeneratorUI = {
    generate(){
 
         if(Project.compartments.length === 0){
-            cosole.log("Validation: Add a compartment first");
+            console.log("Validation: Add a compartment first");
             return;
         }
 

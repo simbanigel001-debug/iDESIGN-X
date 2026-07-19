@@ -95,23 +95,34 @@ const CabinetEngine = {
         );
     }
 
-}; // This closes the CabinetEngine object correctly
+};
+
+// Initialize Engine
 window.iDesign.Engine = {
     scene: new THREE.Scene(),
     camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
-    // 1. Initialize the Renderer
     renderer: new THREE.WebGLRenderer({ antialias: true }),
     logic: CabinetEngine
 };
 
-// 2. Set up the Renderer
+// --- ADDED LIGHTING ---
+// Adding lighting so MeshLambertMaterial becomes visible
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); 
+window.iDesign.Engine.scene.add(ambientLight);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5, 5, 5);
+window.iDesign.Engine.scene.add(dirLight);
+// ----------------------
+
+// Set up the Renderer
 window.iDesign.Engine.renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(window.iDesign.Engine.renderer.domElement);
 
-// 3. Set camera position
+// Set camera position
 window.iDesign.Engine.camera.position.set(0, 1, 5); 
 
-// 4. Create the Render Loop (The Heartbeat)
+// Create the Render Loop
 function animate() {
     requestAnimationFrame(animate);
     window.iDesign.Engine.renderer.render(
@@ -120,15 +131,15 @@ function animate() {
     );
 }
 
-// Start the loop
 animate();
 
-console.log("[iDesign] Engine fully initialized with renderer and animation loop.");
-// Style the canvas to sit behind your UI but be visible
+console.log("[iDesign] Engine fully initialized with renderer, lighting, and animation loop.");
+
+// Style the canvas
 const canvas = window.iDesign.Engine.renderer.domElement;
 canvas.style.position = 'absolute';
 canvas.style.top = '0';
 canvas.style.left = '0';
-canvas.style.zIndex = '-1'; // Pushes it to the background
+canvas.style.zIndex = '-1'; 
 console.log("[iDesign] Engine successfully initialized with global scene.");
 console.log("Engineering Cabinet Engine Loaded");

@@ -3,75 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iDesign Studio</title>
-    <!-- Keep this linked to your CSS file for the "Studio" look -->
+    <title>Cabinet Studio</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="ui-styles.css">
 </head>
 <body>
 
-    <!-- This wrapper is the only container needed; all original content is inside -->
-    <div id="app">
-
-        <!-- Toolbar: Using your original structure -->
-        <header class="toolbar">
-            <div class="brand">Cabinet Studio</div>
-            <div class="actions">
-                <button onclick="App.newProject()">New</button>
-                <button onclick="App.saveProject()">Save</button>
-                <button class="primary" onclick="App.generate()">Generate</button>
-                <button onclick="App.undo()">Undo</button>
-                <button onclick="App.redo()">Redo</button>
-                <button onclick="App.exportCuttingList()">Export Cutting List</button>
+<div id="app">
+    <!-- TOP TOOLBAR -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">▣</div>
+            <div>
+                <h1>Cabinet Studio</h1>
+                <span>Engineering Workspace</span>
             </div>
-        </header>
+        </div>
 
-        <!-- Sidebar: Using your original structure -->
-        <aside class="sidebar">
-            <h3>Wardrobe Input</h3>
-            <label>Compartment Width</label>
-            <input type="number" id="comp-width" value="600">
+        <div class="toolbar-actions">
+            <button class="tool-btn" id="newProjectBtn">New</button>
+            <button class="tool-btn" id="saveBtn">Save</button>
+            <button class="tool-btn primary" id="generateBtn">Generate</button>
+            <button class="icon-btn" id="themeBtn">◐</button>
             
-            <label>Type</label>
-            <select id="comp-type">
-                <option value="hanging">Hanging</option>
-                <option value="folding">Folding</option>
-                <option value="open">Open</option>
-            </select>
+            <!-- Separated Buttons (Fixed nesting) -->
+            <button id="undoButton">Undo</button>
+            <button id="redoButton">Redo</button>
+            <button onclick="ProductionExport.exportCSV()">Export Cutting List</button>
+            <button onclick="DesignStorage.saveProject('My Wardrobe')">Save Project</button>
+            <button onclick="DesignStorage.getProjects()">Projects</button>
+            <button onclick="ProductionExport.exportSheets()">Export Sheets</button>
+        </div>
+    </header>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="add-doors"> <label>Add Doors</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="add-drawers"> <label>Add Drawers</label>
-            </div>
-
-            <button onclick="App.addComponent()">Add Compartment</button>
-        </aside>
-
-        <!-- Main Canvas: Restored to original hierarchy -->
-        <main class="canvas-area" id="canvas-container">
-            <!-- Your 3D engine scripts inject the canvas here -->
-        </main>
-
-        <!-- Inspector: Restored to original hierarchy -->
-        <aside class="inspector">
-            <h3>Inspector</h3>
-            <div id="inspector-data"></div>
-            
-            <h3>Cutting List</h3>
-            <div id="cutting-list-output"></div>
-        </aside>
-
+    <!-- 3D GENERATION CONTROLS -->
+    <div class="toolbar-actions">
+        <button onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
+        <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
+        <button onclick="Interior3DSystem.build()">Generate Interior</button>
     </div>
+    
+    <!-- MAIN APPLICATION AREA -->
+    <main class="workspace">
+        <aside class="sidebar">
+            <div class="panel-title">PROJECT</div>
+            <nav class="menu">
+                <button class="menu-item active"><span>⌂</span> Dashboard</button>
+                <button class="menu-item"><span>▤</span> Cabinets</button>
+                <button class="menu-item"><span>□</span> Compartments</button>
+                <button class="menu-item"><span>⚙</span> Settings</button>
+            </nav>
 
-    <!-- SCRIPTS: Exact list from your repository -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+            <button onclick="CameraControls3D.reset()">Reset View</button>
+            <button onclick="CameraControls3D.frontView()">Front</button>
+            <button onclick="CameraControls3D.sideView()">Side</button>
+            <button onclick="CameraControls3D.topView()">Top</button>
+
+            <div class="sidebar-bottom">
+                <div class="connection">
+                    <span class="status-dot"></span> System Ready
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER WORKSPACE -->
+        <section class="canvas-area">
+            <div class="canvas-header">
+                <h2>Design Workspace</h2>
+                <button id="commandBtn">Command Palette <span>Ctrl + K</span></button>
+            </div>
+            <div class="design-board">
+                <div class="empty-state">
+                    <div class="cube">◇</div>
+                    <div id="cuttingSheets"></div>
+                    <h3>Workspace Ready</h3>
+                    <p>Start designing your cabinet system.</p>
+                    <button id="startBtn">Create Project</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT INSPECTOR -->
+        <aside class="inspector">
+            <div class="panel-title">INSPECTOR</div>
+            <div class="property-card"><label>Project</label><div class="value">Untitled Project</div></div>
+            <div class="property-card"><label>Height</label><div class="value">2700 mm</div></div>
+            <div class="property-card"><label>Depth</label><div class="value">600 mm</div></div>
+            <div class="property-card"><label>Material</label><div class="value">Melamine</div></div>
+        </aside>
+    </main>
+
+    <!-- STATS PANEL -->
+    <section class="stats">
+        <div class="stat-card"><span>Cabinets</span><strong id="cabinetCount">0</strong></div>
+        <div class="stat-card"><span>Parts</span><strong id="partCount">0</strong></div>
+        <div class="stat-card"><span>Sheets</span><strong id="sheetCount">0</strong></div>
+        <div class="stat-card"><span>Status</span><strong class="green">Ready</strong></div>
+    </section>
+
+    <!-- MATERIAL SELECTOR -->
+    <select onchange="Material3DSystem.apply(this.value)">
+        <option value="whiteMatt">White Matt</option>
+        <option value="blackMatt">Black Matt</option>
+        <option value="oakWood">Oak Wood</option>
+        <option value="walnut">Walnut</option>
+        <option value="glossWhite">Gloss White</option>
+    </select>
+
+    <!-- SCRIPTS -->
+    <!-- Load Core Registry First -->
+<script src="i-design-core.js" defer></script> 
+
+<!-- Existing scripts follow -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+...
     <script src="data-model.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"defer></script>
     <script src="cabinet-3d-model.js" defer></script>
     <script src="3d-door-system.js" defer></script>
     <script src="3d-shelf-system.js" defer></script>
     <script src="Camera-Controls-3D.js" defer></script>
+    <script src="3d-material-system.js" defer></script>
     <script src="three-setup.js" defer></script>
     <script src="engineering-rules.js" defer></script>
     <script src="engineering-validator.js" defer></script>
@@ -104,6 +156,6 @@
     <script src="cabinet-engine.js" defer></script>
     <script src="cabinet-module.js" defer></script>
     <script src="app.js" defer></script>
-
+</div>
 </body>
 </html>

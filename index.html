@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iDesign Studio</title>
-    <!-- CSS File -->
+    <!-- Keep this linked to your CSS file for the "Studio" look -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+    <!-- This wrapper is the only container needed; all original content is inside -->
     <div id="app">
-        
-        <!-- Header Toolbar -->
+
+        <!-- Toolbar: Using your original structure -->
         <header class="toolbar">
             <div class="brand">Cabinet Studio</div>
             <div class="actions">
@@ -24,52 +25,46 @@
             </div>
         </header>
 
-        <!-- Sidebar: Inputs -->
+        <!-- Sidebar: Using your original structure -->
         <aside class="sidebar">
-            <div id="ui-container">
-                <h3>Wardrobe Input</h3>
-                <label>Compartment Width</label>
-                <input type="number" id="comp-width" value="600">
-                
-                <label>Type</label>
-                <select id="comp-type">
-                    <option value="hanging">Hanging</option>
-                    <option value="folding">Folding</option>
-                    <option value="open">Open</option>
-                </select>
+            <h3>Wardrobe Input</h3>
+            <label>Compartment Width</label>
+            <input type="number" id="comp-width" value="600">
+            
+            <label>Type</label>
+            <select id="comp-type">
+                <option value="hanging">Hanging</option>
+                <option value="folding">Folding</option>
+                <option value="open">Open</option>
+            </select>
 
-                <div class="checkbox-group">
-                    <input type="checkbox" id="add-doors"> <label>Add Doors</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="add-drawers"> <label>Add Drawers</label>
-                </div>
-
-                <button onclick="App.addComponent()">Add Compartment</button>
+            <div class="checkbox-group">
+                <input type="checkbox" id="add-doors"> <label>Add Doors</label>
             </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="add-drawers"> <label>Add Drawers</label>
+            </div>
+
+            <button onclick="App.addComponent()">Add Compartment</button>
         </aside>
 
-        <!-- Main Canvas: 3D Workspace -->
+        <!-- Main Canvas: Restored to original hierarchy -->
         <main class="canvas-area" id="canvas-container">
-            <!-- 3D Engine renders canvas here -->
+            <!-- Your 3D engine scripts inject the canvas here -->
         </main>
 
-        <!-- Right Panel: Inspector -->
+        <!-- Inspector: Restored to original hierarchy -->
         <aside class="inspector">
             <h3>Inspector</h3>
-            <div id="inspector-data">
-                <!-- Inspector data injects here -->
-            </div>
+            <div id="inspector-data"></div>
             
             <h3>Cutting List</h3>
-            <div id="cutting-list-output">
-                <!-- Cutting list injects here -->
-            </div>
+            <div id="cutting-list-output"></div>
         </aside>
 
     </div>
 
-    <!-- FULL SCRIPT LIST: Transcribed exactly from your files -->
+    <!-- SCRIPTS: Exact list from your repository -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
     <script src="data-model.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js" defer></script>

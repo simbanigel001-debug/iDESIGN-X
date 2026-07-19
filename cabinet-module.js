@@ -1,64 +1,61 @@
 /**
  * iDESIGN X | Cabinet Module
- * Handles Cabinet Geometry instantiation and state.
  */
 window.iDesign = window.iDesign || {};
 
 iDesign.Cabinet = {
-    // Default settings
     defaults: {
         width: 600,
         height: 2700,
         depth: 600
     },
 
-    // Public Method: Build a cabinet from input data
     build: function(config = {}) {
         const settings = { ...this.defaults, ...config };
-        console.log(`[iDesign.Cabinet] Building carcass: ${settings.width}x${settings.height}x${settings.depth}`);
+        console.log(`[iDesign.Cabinet] Building: ${settings.width}x${settings.height}x${settings.depth}`);
         this.generateGeometry(settings);
     },
 
-   generateGeometry: function(settings) {
-    if (!window.iDesign.Engine || !window.iDesign.Engine.scene) return;
+    generateGeometry: function(settings) {
+        if (!window.iDesign.Engine || !window.iDesign.Engine.scene) {
+            console.error("[iDesign.Cabinet] Engine not initialized.");
+            return;
+        }
+        this.clearScene();
+        
+        // Ensure Engineering is loaded before calling it
+        if (window.iDesign.Engineering && typeof window.iDesign.Engineering.getPartList === 'function') {
+            const parts = window.iDesign.Engineering.getPartList(settings);
+            parts.forEach(part => this.renderPart(part));
+        } else {
+            console.warn("[iDesign.Cabinet] Engineering module not found, building fallback cube.");
+            this.renderPart({ w: settings.width, h: settings.height, d: settings.depth, x: 0, y: settings.height/2000, z: 0, type: 'carcass' });
+        }
+    },
 
-    // 1. Get the list of parts from your Engineering module
-    // We assume your Engineering module returns an array of part objects
-    // Each part should have {x, y, z, w, h, d, materialType}
-    const parts = window.iDesign.Engineering.generatePartList(settings);
+    renderPart: function(part) {
+        const geometry = new THREE.BoxGeometry(part.w / 1000, part.h / 1000, part.d / 1000);
+        const material = this.getMaterial(part.type);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(part.x / 1000, part.y, part.z / 1000);
+        window.iDesign.Engine.scene.add(mesh);
+    },
 
-    // 2. Clear existing geometry so we don't stack cabinets
-    this.clearScene(); 
+    getMaterial: function(type) {
+        return (type === 'masonite') ? 
+            new THREE.MeshLambertMaterial({ color: 0x444444 }) : 
+            new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+    },
 
-    // 3. Loop through the parts and render them
-    parts.forEach(part => {
-        this.renderPart(part);
-    });
-
-    console.log(`[iDesign.Cabinet] Rendered ${parts.length} parts from Engineering engine.`);
-},
-
-// Helper to create individual parts
-renderPart: function(part) {
-    const geometry = new THREE.BoxGeometry(part.w, part.h, part.d);
-    
-    // Select material based on user-defined types (Carcass vs Masonite)
-    const material = this.getMaterial(part.materialType);
-    
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(part.x, part.y, part.z);
-    
-    window.iDesign.Engine.scene.add(mesh);
-},
-
-// Material Logic (Using your required naming conventions)
-getMaterial: function(type) {
-    if (type === 'masonite') {
-        return new THREE.MeshLambertMaterial({ color: 0x444444 }); // Darker for backing
+    clearScene: function() {
+        const scene = window.iDesign.Engine.scene;
+        for (let i = scene.children.length - 1; i >= 0; i--) {
+            if (scene.children[i].type !== 'DirectionalLight' && scene.children[i].type !== 'AmbientLight') {
+                scene.remove(scene.children[i]);
+            }
+        }
     }
-    // Default to 'carcass'
-    return new THREE.MeshLambertMaterial({ color: 0x8B4513 }); 
-}
+}; // <--- This closing brace is vital
 
 // Register the module
 iDesign.register('Cabinet', iDesign.Cabinet);

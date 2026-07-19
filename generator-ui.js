@@ -18,22 +18,28 @@ const GeneratorUI = {
         .addEventListener("click", () => this.generate());
     },
 
-    generate(){
+   generate(){
 
         if(Project.compartments.length === 0){
             App.notify("Add a compartment first");
             return;
         }
 
+        // 1. Get the parts from your existing engine
         const parts = CabinetEngine.generate(Project);
 
+        // 2. Generate the report/table (Existing UI logic)
         const report = ProductionOutput.generate(Project);
         ProductionOutput.display(report);
-
-        // Fixed: Now correctly passing 'parts' to the render function
         this.render(parts);
 
-        App.notify("Cutting list generated");
+        // 3. ADD THIS LINE: Trigger the 3D build using your current project settings
+        // We pass the project settings so the cabinet is built to the right dimensions
+        if (window.iDesign && window.iDesign.Cabinet) {
+            window.iDesign.Cabinet.build(Project.settings);
+        }
+
+        App.notify("Cutting list and 3D model generated");
     },
 
     createOutputPanel(){

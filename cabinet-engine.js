@@ -89,13 +89,20 @@ const CabinetEngine = {
         }
     },
 
-    addPart(project, name, width, height, quantity) {
-        project.generatedParts.push(
-            new Part(name, width, height, quantity)
-        );
+    // Inside CabinetEngine...
+addPart(project, name, width, height, quantity) {
+    const part = new Part(name, width, height, quantity);
+    project.generatedParts.push(part);
+    
+    // Auto-apply current project material
+    const materialId = project.settings.materialId || 'melawood-folkstone'; 
+    // Assuming you have access to the scene object
+    // This looks for the mesh created with this name/part
+    const mesh = window.iDesign.Engine.scene.getObjectByName(name);
+    if(mesh) {
+        window.iDesign.TextureManager.applyToMesh(mesh, materialId);
     }
-
-};
+}
 
 // Initialize Engine
 window.iDesign.Engine = {

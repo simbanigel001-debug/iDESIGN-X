@@ -297,3 +297,86 @@ h1, h3 {
     display: flex;
     gap: 12px; /* Uniform spacing like the PG Bison site */
 }
+/* --- Global Dashboard Styling --- */
+:root {
+    --bg-dark: #0f0f0f;        /* Deep black background */
+    --panel-bg: #1a1a1a;       /* Slightly lighter panel background */
+    --border-color: #333;      /* Subtle border */
+    --accent: #ff9800;         /* Your orange accent */
+    --text-main: #e8e8e8;
+    --text-dim: #999;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-main);
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- Layout Grid --- */
+#app {
+    display: grid;
+    grid-template-columns: 280px 1fr 300px;
+    grid-template-rows: 64px 1fr;
+    gap: 16px;
+    height: 100vh;
+    padding: 16px;
+}
+
+/* --- Professional Toolbar --- */
+.toolbar {
+    grid-column: 1 / -1;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 15px;
+}
+
+/* --- Panel Styling (The "Card" Effect) --- */
+.sidebar, .canvas-area, .inspector {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Cutting List Table Alignment --- */
+/* This fixes the messy list look from your screenshot */
+#cutting-list-output {
+    display: grid;
+    grid-template-columns: 1fr 60px; /* Aligns description to left, Qty to right */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* --- Text Hierarchy --- */
+h3 {
+    color: var(--accent);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+button {
+    background: #252525;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+button:hover { background: #333; border-color: var(--accent); }
+button.primary { background: var(--accent); border: none; font-weight: bold; }

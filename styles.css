@@ -1,322 +1,21 @@
-/* =====================================================
+/* --- Root Variables for Consistent Theme --- */
 :root {
-    --bg-dark: #121212;
-    --panel-dark: #1e1e1e;
-    --accent-orange: #ff5722;
-    --text-main: #e0e0e0;
-}
-
-body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; display: flex; height: 100vh; }
-
-#app { display: grid; grid-template-columns: 300px 1fr 300px; width: 100%; height: 100%; }
-<head>⁠: ⁠<link rel="stylesheet" href="styles.css">
-
-/* Workspace Area */
-.canvas-area { position: relative; overflow: hidden; background: #0a0a0a; }
-
-/* Inspector Panel */
-.inspector { background: var(--panel-dark); padding: 20px; border-left: 1px solid #333; }
-
-/* Tool Bar */
-.toolbar { grid-column: 1 / -1; background: var(--panel-dark); display: flex; padding: 10px; gap: 10px; border-bottom: 1px solid #333; }
-
-.btn { background: var(--accent-orange); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
-
-#app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Keeps layout stable */
-}
-
-/* Fixes the blank page issue: ensure workspace expands */
-.workspace {
-    display: grid;
-    grid-template-columns: 240px 1fr 300px;
-    flex: 1;
-}
-
-.canvas-area {
-    padding: 20px;
-    overflow-y: auto;
-}
-
-/* Keeps the viewer visible but not destructive */
-#threeViewer {
-    width: 100%;
-    height: 400px; 
-    background: #000;
-    border: 1px solid var(--border);
-    margin-bottom: 20px;
-    display: block;
-}
-
-/* Original Sidebar/Panel Styles */
-.sidebar, .inspector { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; }
-.topbar { height: 72px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; }
-/* Ensure the viewer takes priority */
-#threeViewer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10; /* This forces it to sit on top of the empty state */
-    pointer-events: auto;
-}
-
-/* Ensure the container is positioned so the viewer knows where to sit */
-.design-board {
-    position: relative;
-    overflow: hidden;
-}
-/* Ensure the Viewport container respects the layout */
-.viewport {
-    position: relative; /* Essential for 3D engine containment */
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}
-/* Scoped container targeting */
-.viewport > canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: inherit; /* Inherits your design system's rounding */
-}
-/* Professional Studio Layout */
-#app {
-    display: grid;
-    grid-template-columns: 320px 1fr 300px;
-    height: 100vh;
-    background: #121212;
-    color: #e0e0e0;
-}
-
-.canvas-area {
-    position: relative;
-    background: radial-gradient(circle at center, #2c2c2c 0%, #121212 100%);
-    border-left: 1px solid #333;
-    border-right: 1px solid #333;
-}
-/* =====================================================
-:root {
-    --bg-dark: #121212;
-    --panel-dark: #1e1e1e;
-    --accent-orange: #ff5722;
-    --text-main: #e0e0e0;
-}
-
-body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; display: flex; height: 100vh; }
-
-#app { display: grid; grid-template-columns: 300px 1fr 300px; width: 100%; height: 100%; }
-<head>⁠: ⁠<link rel="stylesheet" href="styles.css">
-
-/* Workspace Area */
-.canvas-area { position: relative; overflow: hidden; background: #0a0a0a; }
-
-/* Inspector Panel */
-.inspector { background: var(--panel-dark); padding: 20px; border-left: 1px solid #333; }
-
-/* Tool Bar */
-.toolbar { grid-column: 1 / -1; background: var(--panel-dark); display: flex; padding: 10px; gap: 10px; border-bottom: 1px solid #333; }
-
-.btn { background: var(--accent-orange); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; }
-
-#app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Keeps layout stable */
-}
-
-/* Fixes the blank page issue: ensure workspace expands */
-.workspace {
-    display: grid;
-    grid-template-columns: 240px 1fr 300px;
-    flex: 1;
-}
-
-.canvas-area {
-    padding: 20px;
-    overflow-y: auto;
-}
-
-/* Keeps the viewer visible but not destructive */
-#threeViewer {
-    width: 100%;
-    height: 400px; 
-    background: #000;
-    border: 1px solid var(--border);
-    margin-bottom: 20px;
-    display: block;
-}
-
-/* Original Sidebar/Panel Styles */
-.sidebar, .inspector { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 20px; }
-.topbar { height: 72px; background: var(--bg-panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 24px; }
-/* Ensure the viewer takes priority */
-#threeViewer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10; /* This forces it to sit on top of the empty state */
-    pointer-events: auto;
-}
-
-/* Ensure the container is positioned so the viewer knows where to sit */
-.design-board {
-    position: relative;
-    overflow: hidden;
-}
-/* Ensure the Viewport container respects the layout */
-.viewport {
-    position: relative; /* Essential for 3D engine containment */
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-}
-/* Scoped container targeting */
-.viewport > canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: inherit; /* Inherits your design system's rounding */
-}
-/* Professional Studio Layout */
-#app {
-    display: grid;
-    grid-template-columns: 320px 1fr 300px;
-    height: 100vh;
-    background: #121212;
-    color: #e0e0e0;
-}
-
-.canvas-area {
-    position: relative;
-    background: radial-gradient(circle at center, #2c2c2c 0%, #121212 100%);
-    border-left: 1px solid #333;
-    border-right: 1px solid #333;
-}
-/* Base Setup */
-body, html { margin: 0; height: 100%; font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; }
-
-/* The Grid Layout */
-#app {
-    display: grid;
-    grid-template-rows: auto 1fr; /* Topbar takes required height, rest fills screen */
-    grid-template-columns: 300px 1fr 300px;
-    height: 100vh;
-}
-
-/* Header: This matches your existing 'topbar' class */
-.topbar { grid-column: 1 / -1; background: #1e1e1e; border-bottom: 1px solid #333; padding: 10px; }
-
-/* Content Grid: We will add these classes to your divs */
-.sidebar { background: #1a1a1a; border-right: 1px solid #333; padding: 20px; overflow-y: auto; }
-.canvas-area { background: #0a0a0a; position: relative; }
-.inspector { background: #1a1a1a; border-left: 1px solid #333; padding: 20px; overflow-y: auto; }
-/* 1. Typography & Global Reset */
-:root {
-    --bg-color: #121212;
-    --panel-color: #1e1e1e;
-    --accent-color: #e67e22; /* Premium Orange Accent */
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --border-color: #333333;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-/* 2. Sleek Toolbar (The Header) */
-.topbar {
-    background: var(--panel-color);
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-/* 3. "Million Dollar" Buttons */
-button {
-    background: #2a2a2a;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 10px 20px;
-    border-radius: 6px; /* Smooth, modern look */
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-button:hover {
-    background: #3a3a3a;
-    border-color: var(--accent-color);
-}
-
-button.primary {
-    background: var(--accent-color);
-    border: none;
-}
-
-button.primary:hover {
-    background: #d35400;
-}
-
-/* 4. Controls/Inputs (Clean & Orderly) */
-input, select {
-    background: #252525;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    color: white;
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 12px;
-}
-
-/* 5. Hierarchy (Making it look "Ordered") */
-h1, h3 {
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-}
-
-/* 6. Professional Whitespace/Padding */
-.toolbar-actions {
-    display: flex;
-    gap: 12px; /* Uniform spacing like the PG Bison site */
-}
-/* --- Global Dashboard Styling --- */
-:root {
-    --bg-dark: #0f0f0f;        /* Deep black background */
-    --panel-bg: #1a1a1a;       /* Slightly lighter panel background */
-    --border-color: #333;      /* Subtle border */
-    --accent: #ff9800;         /* Your orange accent */
+    --bg-dark: #0f0f0f;
+    --panel-bg: #1a1a1a;
+    --border-color: #333;
+    --accent: #ff9800;
     --text-main: #e8e8e8;
-    --text-dim: #999;
 }
 
-body {
-    background-color: var(--bg-dark);
+body, html {
+    margin: 0; padding: 0; height: 100%;
     font-family: 'Inter', 'Segoe UI', sans-serif;
+    background-color: var(--bg-dark);
     color: var(--text-main);
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
 }
 
-/* --- Layout Grid --- */
+/* --- THE MAIN DASHBOARD GRID --- */
+/* This forces the order without moving any HTML elements */
 #app {
     display: grid;
     grid-template-columns: 280px 1fr 300px;
@@ -326,7 +25,7 @@ body {
     padding: 16px;
 }
 
-/* --- Professional Toolbar --- */
+/* --- Header --- */
 .toolbar {
     grid-column: 1 / -1;
     background: var(--panel-bg);
@@ -335,35 +34,25 @@ body {
     display: flex;
     align-items: center;
     padding: 0 20px;
-    gap: 15px;
+    gap: 12px;
 }
 
-/* --- Panel Styling (The "Card" Effect) --- */
+/* --- Panels (Sidebar, Workspace, Inspector) --- */
 .sidebar, .canvas-area, .inspector {
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto;
 }
 
-/* --- Cutting List Table Alignment --- */
-/* This fixes the messy list look from your screenshot */
-#cutting-list-output {
-    display: grid;
-    grid-template-columns: 1fr 60px; /* Aligns description to left, Qty to right */
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* --- Text Hierarchy --- */
+/* --- Professional UI Elements --- */
 h3 {
     color: var(--accent);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
 }
@@ -379,4 +68,22 @@ button {
 }
 
 button:hover { background: #333; border-color: var(--accent); }
-button.primary { background: var(--accent); border: none; font-weight: bold; }
+button.primary { background: var(--accent); border: none; font-weight: bold; color: black; }
+
+input, select {
+    background: #252525;
+    border: 1px solid #444;
+    color: white;
+    padding: 8px;
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 12px;
+}
+
+/* --- Cutting List Table Styling --- */
+#cutting-list-output {
+    display: grid;
+    grid-template-columns: 1fr 50px;
+    gap: 10px;
+    font-size: 0.9rem;
+}

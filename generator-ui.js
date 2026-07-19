@@ -21,7 +21,7 @@ const GeneratorUI = {
    generate(){
 
         if(Project.compartments.length === 0){
-            App.notify("Add a compartment first");
+            cosole.log("Validation: Add a compartment first");
             return;
         }
 

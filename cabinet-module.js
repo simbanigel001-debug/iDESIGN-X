@@ -16,33 +16,44 @@ iDesign.Cabinet = {
         this.generateGeometry(settings);
     },
 
-   generateGeometry: function(settings) {
-        if (!window.iDesign.Engine || !window.iDesign.Engine.scene) return;
-        
+    generateGeometry: function(settings) {
+        if (!window.iDesign.Engine || !window.iDesign.Engine.scene) {
+            console.error("[iDesign.Cabinet] Engine not initialized.");
+            return;
+        }
         this.clearScene();
-
-        // 1. Get rules from the Engineering engine we just registered
-        const rules = window.iDesign.Engineering;
         
-        // 2. Define panels based on your Engineering settings
+        // Define hardcoded parts for now until Engineering integration is fully mapped
         const parts = [
-            // Left Side
             { w: 18, h: settings.height, d: settings.depth, x: -settings.width/2000, y: settings.height/2000, z: 0, type: 'carcass' },
-            // Right Side
             { w: 18, h: settings.height, d: settings.depth, x: settings.width/2000, y: settings.height/2000, z: 0, type: 'carcass' },
-            // Bottom (Sitting on plinth)
-            { w: settings.width - 36, h: 18, d: settings.depth, x: 0, y: (rules.settings.plinth + 9)/1000, z: 0, type: 'carcass' },
-            // Top
-            { w: settings.width - 36, h: 18, d: settings.depth, x: 0, y: (settings.height - 9)/1000, z: 0, type: 'carcass' },
-            // Back Panel (Using Masonite as requested)
+            { w: settings.width - 36, h: 18, d: settings.depth, x: 0, y: 0.05, z: 0, type: 'carcass' },
+            { w: settings.width - 36, h: 18, d: settings.depth, x: 0, y: settings.height/1000, z: 0, type: 'carcass' },
             { w: settings.width, h: settings.height, d: 5, x: 0, y: settings.height/2000, z: -settings.depth/2000, type: 'masonite' }
         ];
 
-        // 3. Render each part
         parts.forEach(part => this.renderPart(part));
-        
-        console.log(`[iDesign.Cabinet] Built with ${parts.length} engineered parts.`);
     },
 
-// Register the module
+    renderPart: function(part) {
+        const geometry = new THREE.BoxGeometry(part.w / 1000, part.h / 1000, part.d / 1000);
+        const material = (part.type === 'masonite') ? 
+            new THREE.MeshLambertMaterial({ color: 0x444444 }) : 
+            new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+        
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(part.x, part.y, part.z);
+        window.iDesign.Engine.scene.add(mesh);
+    },
+
+    clearScene: function() {
+        const scene = window.iDesign.Engine.scene;
+        for (let i = scene.children.length - 1; i >= 0; i--) {
+            if (scene.children[i].type !== 'DirectionalLight' && scene.children[i].type !== 'AmbientLight') {
+                scene.remove(scene.children[i]);
+            }
+        }
+    }
+};
+
 iDesign.register('Cabinet', iDesign.Cabinet);

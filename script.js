@@ -199,9 +199,9 @@ const App = {
                     <td>${widthVal}</td>
                     <td>${thicknessVal}</td>
                     <td>${part.quantity || 1}</td>
-                    <td>${materialName}</td>
-                    <td>${part.edging || ''}</td>
-                `;
+                        <td>${materialName}</td>
+                        <td>${part.edging || ''}</td>
+                    `;
                 tableBody.appendChild(row);
             });
         }

@@ -75,3 +75,26 @@ th {
  color: var(--gh-text-muted);
 }
 
+/* Cutting list header layout to avoid header/button overlap */
+.cutlist-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 1rem;
+ margin: 1rem 0 0.5rem 0;
+ padding: 0 8px;
+}
+.cutlist-header h3 {
+ margin: 0;
+ font-size: 1.1rem;
+}
+.cutlist-actions .toolbar-actions,
+.cutlist-actions {
+ display: flex;
+ gap: 0.5rem;
+ align-items: center;
+}
+.cut-list-container {
+ padding: 0 8px 1rem 8px;
+}
+

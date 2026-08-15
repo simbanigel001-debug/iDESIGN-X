@@ -32,41 +32,56 @@ const CabinetEngine = {
         const shelfWidth = EngineeringRules.shelfLength(width);
 
         /* SIDE PANELS */
-        this.addPart(project, "Side Panel", 2700, 600, 2);
+        this.addPart(project, "Side Panel", 2700, 600, 2, compartment.id);
 
         /* PLINTH */
-        this.addPart(project, "Internal Plinth", shelfWidth, 100, 1);
+        this.addPart(project, "Internal Plinth", shelfWidth, 100, 1, compartment.id);
 
         switch (compartment.type) {
-            case "hanging": this.hanging(project, shelfWidth); break;
-            case "folding": this.folding(project, shelfWidth); break;
-            case "open": this.open(project, shelfWidth); break;
+            case "hanging": this.hanging(project, shelfWidth, compartment.id); break;
+            case "folding": this.folding(project, shelfWidth, compartment.id); break;
+            case "open": this.open(project, shelfWidth, compartment.id); break;
         }
 
         CabinetIntegration.applyAccessories(project, compartment);
     },
 
-    hanging(project, width) {
+    hanging(project, width, compartmentId) {
         ["Top Shelf", "Bottom Shelf", "Inner Shelf", "Hanging Shelf"].forEach(name => {
-            this.addPart(project, name, width, 584, 1);
+            this.addPart(project, name, width, 584, 1, compartmentId);
         });
-        this.addPart(project, "Hanging Rail", width, 40, 1);
+        this.addPart(project, "Hanging Rail", width, 40, 1, compartmentId);
     },
 
-    folding(project, width) {
+    folding(project, width, compartmentId) {
         for (let i = 0; i < 8; i++) {
-            this.addPart(project, "Folding Shelf", width, 584, 1);
+            this.addPart(project, "Folding Shelf", width, 584, 1, compartmentId);
         }
     },
 
-    open(project, width) {
-        this.addPart(project, "Open Shelf", width, 584, 1);
+    open(project, width, compartmentId) {
+        this.addPart(project, "Open Shelf", width, 584, 1, compartmentId);
     },
 
-    addPart(project, name, width, height, quantity) {
-        project.generatedParts.push(new Part(name, width, height, quantity));
-    }
-};
+    addPart(project, name, width, height, quantity, compartmentId) {
+        const part = new Part(name, width, height, quantity, compartmentId);
+        // assign materialId from project settings (catalog) when available
+        if (project && project.settings) {
+            part.materialId = project.settings.materialId || null;
+            if (!part.materialId && project.settings.material) {
+                part.material = project.settings.material;
+            }
+        }
+        // determine edging rules based on name
+        if (typeof calculateEdging === 'function') {
+            try {
+                part.edging = calculateEdging(part.name, part.width, part.height);
+            } catch (e) {
+                part.edging = null;
+            }
+        }
+        project.generatedParts.push(part);
+    };};
 
 // --- iDesign Engine Initialization ---
 window.iDesign.Engine = window.iDesign.Engine || {};
@@ -142,19 +157,72 @@ window.iDesign.Cabinet = {
 
         const parts = (typeof CabinetEngine.generate === 'function') ? CabinetEngine.generate(Project) : [];
 
+        // Group parts by compartment for multi-cabinet placement
+        const groups = {};
+        const compartments = Project.compartments || [];
+        compartments.forEach(c => { groups[c.id] = []; });
+        // put ungrouped parts into an "ungrouped" bucket
+        groups.__ungrouped = [];
+
         parts.forEach(part => {
+            const cid = part.compartmentId || '__ungrouped';
+            if (!groups[cid]) groups[cid] = [];
+            groups[cid].push(part);
+        });
+
+        // spacing between cabinets in meters
+        const gap = 0.02; // 20mm
+        let xOffset = 0;
+
+        // iterate compartments in order
+        for (let i = 0; i < compartments.length; i++) {
+            const comp = compartments[i];
+            const compParts = groups[comp.id] || [];
+
+            // create a group for this cabinet
+            const cabGroup = new THREE.Group();
+            cabGroup.name = `Cabinet-${i}`;
+
+            // compute local placement offset (centered)
+            const compWidthMeters = (comp.width || 600) / 1000;
+
+            compParts.forEach(part => {
+                const isBack = part.name && part.name.toLowerCase().includes('back');
+                const thickness = isBack ? 0.003 : 0.016;
+                const geometry = new THREE.BoxGeometry((part.width || 0) / 1000, (part.height || 0) / 1000, thickness);
+
+                // resolve material color from catalog if available
+                let colorHex = '#cccccc';
+                if (part.materialId && window.PGBoardCatalog && window.PGBoardCatalog.get(part.materialId)) {
+                    colorHex = window.PGBoardCatalog.get(part.materialId).colorHex || colorHex;
+                } else if (Project.settings && Project.settings.materialId && window.PGBoardCatalog && window.PGBoardCatalog.get(Project.settings.materialId)) {
+                    colorHex = window.PGBoardCatalog.get(Project.settings.materialId).colorHex || colorHex;
+                }
+                const colorVal = parseInt(colorHex.replace('#',''), 16) || 0xcccccc;
+
+                const material = new THREE.MeshLambertMaterial({ color: colorVal });
+                const mesh = new THREE.Mesh(geometry, material);
+                // position each part within the cabinet (simple stacking by height)
+                mesh.position.set(0, (part.height || 0) / 2000, 0);
+                cabGroup.add(mesh);
+            });
+
+            // position group along X axis with spacing
+            cabGroup.position.set(xOffset + compWidthMeters/2, 0, 0);
+            window.iDesign.Engine.scene.add(cabGroup);
+
+            xOffset += compWidthMeters + gap;
+        }
+
+        // Add any ungrouped parts as fallback at the end
+        const ungrouped = groups.__ungrouped || [];
+        ungrouped.forEach(part => {
             const isBack = part.name && part.name.toLowerCase().includes('back');
-            const thickness = isBack ? 0.003 : 0.016; 
+            const thickness = isBack ? 0.003 : 0.016;
             const geometry = new THREE.BoxGeometry((part.width || 0) / 1000, (part.height || 0) / 1000, thickness);
-
-            const matName = isBack ? "Masonite" : "Carcass";
-            const material = new THREE.MeshLambertMaterial({ 
-                color: isBack ? 0x8b4513 : 0xcccccc, 
-                name: matName 
-            }); 
-
+            const material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
             const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(0, (part.height || 0) / 2000, 0); 
+            mesh.position.set(xOffset + ((part.width || 0) / 1000)/2, (part.height || 0) / 2000, 0);
             window.iDesign.Engine.scene.add(mesh);
         });
         

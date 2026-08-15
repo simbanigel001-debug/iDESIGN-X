@@ -26,10 +26,11 @@ const ProductionExport = {
 
         const project = DesignStorage.loadProject();
         let content = this._buildHeader(project);
-        // MaxCut: tab-separated: Part Name\tLength\tWidth\tQty\tMaterial
+        // MaxCut: tab-separated: Part Name\tLength\tWidth\tQty\tMaterial\tEdging
         parts.forEach(p => {
-            const material = p.material || 'Melamine';
-            content += `${p.name}\t${p.height || p.length || 0}\t${p.width || 0}\t${p.quantity || 1}\t${material}\n`;
+            const material = (p.materialId && window.PGBoardCatalog && window.PGBoardCatalog.get(p.materialId)) ? window.PGBoardCatalog.get(p.materialId).name : (p.material || 'Melamine');
+            const edging = p.edging || '';
+            content += `${p.name}\t${p.height || p.length || 0}\t${p.width || 0}\t${p.quantity || 1}\t${material}\t${edging}\n`;
         });
 
         this.download(content, 'cabinet-maxcut.txt', 'text/plain');
@@ -41,9 +42,11 @@ const ProductionExport = {
 
         const project = DesignStorage.loadProject();
         let csv = this._buildHeader(project);
-        csv += 'PART,WIDTH,HEIGHT,QTY,MATERIAL\n';
+        csv += 'PART,WIDTH,HEIGHT,QTY,MATERIAL,EDGING\n';
         parts.forEach(part => {
-            csv += `${part.name},${part.width},${part.height},${part.quantity},${part.material || 'Melamine 16mm'}\n`;
+            const material = (part.materialId && window.PGBoardCatalog && window.PGBoardCatalog.get(part.materialId)) ? window.PGBoardCatalog.get(part.materialId).name : (part.material || 'Melamine 16mm');
+            const edging = part.edging || '';
+            csv += `${part.name},${part.width},${part.height},${part.quantity},${material},${"\""+edging+"\""}\n`;
         });
 
         this.download(csv, 'cabinet-cutting-list.csv', 'text/csv');

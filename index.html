@@ -30,7 +30,7 @@
             <button id="undoButton">Undo</button>
             <button id="redoButton">Redo</button>
             <button onclick="ProductionExport.exportCSV()">Export Cutting List</button>
-            <button onclick="DesignStorage.saveProject('My Wardrobe')">Save Project</button>
+            <button onclick="DesignStorage.saveProject(Project)">Save Project</button>
             <button onclick="DesignStorage.getProjects()">Projects</button>
             <button onclick="ProductionExport.exportSheets()">Export Sheets</button>
         </div>
@@ -179,8 +179,10 @@
 
 <!-- Existing scripts follow -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="pgb-catalog.js" defer></script>
+<script src="edging-rules.js" defer></script>
 ...
-    <script src="data-model.js" defer></script>
+<script src="data-model.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"defer></script>
     <script src="cabinet-3d-model.js" defer></script>
     <script src="3d-door-system.js" defer></script>

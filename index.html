@@ -36,14 +36,19 @@
         </div>
     </header>
 
-    <!-- 3D GENERATION CONTROLS -->
-    <div class="toolbar-actions">
-        <button onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
-        <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
-        <button onclick="Interior3DSystem.build()">Generate Interior</button>
+    <!-- Cutting List Header: title + generation controls in a single flex row -->
+    <div class="cutlist-header">
+        <h3>Cutting List Output</h3>
+        <div class="cutlist-actions">
+            <div class="toolbar-actions">
+                <button onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
+                <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
+                <button onclick="Interior3DSystem.build()">Generate Interior</button>
+            </div>
+        </div>
     </div>
+
     <div class="cut-list-container">
-    <h3>Cutting List Output</h3>
     <table id="cutListTable">
         <thead>
             <tr>

@@ -36,20 +36,6 @@
         </div>
     </header>
 
-    <!-- Cutting List Header: title + generation controls in a single flex row -->
-    <div class="cutlist-header">
-        <h3>Cutting List Output</h3>
-        <div class="cutlist-actions">
-            <div class="toolbar-actions">
-                <button onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
-                <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
-                <button onclick="Interior3DSystem.build()">Generate Interior</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="cut-list-container">
-    <table id="cutListTable">
         <thead>
             <tr>
                 <th>Part Name</th>
@@ -93,6 +79,41 @@
                 <h2>Design Workspace</h2>
                 <button id="commandBtn">Command Palette <span>Ctrl + K</span></button>
             </div>
+
+            <!-- Workspace panels: 3D preview and cutting list side-by-side -->
+            <div class="workspace-panels">
+                <div id="threeViewer" class="three-panel" aria-label="3D Preview"></div>
+                <div class="cut-list-panel">
+                    <div class="cutlist-header">
+                        <h3>Cutting List Output</h3>
+                        <div class="cutlist-actions">
+                            <div class="toolbar-actions">
+                                <button class="btn-primary" onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
+                                <button class="btn-info" onclick="Door3DSystem.build()">Generate 3D Doors</button>
+                                <button class="btn-info" onclick="Interior3DSystem.build()">Generate Interior</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cut-list-container">
+                        <table id="cutListTable">
+                            <thead>
+                                <tr>
+                                    <th>Part Name</th>
+                                    <th>Length (mm)</th>
+                                    <th>Width (mm)</th>
+                                    <th>Thickness (mm)</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamically populated rows will appear here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div class="design-board">
                 <div class="empty-state">
                     <div class="cube">◇</div>

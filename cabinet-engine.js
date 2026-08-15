@@ -70,68 +70,96 @@ const CabinetEngine = {
 
 // --- iDesign Engine Initialization ---
 window.iDesign.Engine = window.iDesign.Engine || {};
-window.iDesign.Engine.scene = new THREE.Scene();
-window.iDesign.Engine.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-window.iDesign.Engine.renderer = new THREE.WebGLRenderer({ antialias: true });
+// Register cabinet engine logic and defer renderer setup to the central engine initializer when available
 window.iDesign.Engine.logic = CabinetEngine;
 
-// Lighting for visual clarity
+// Provide lights references for when an engine is instantiated
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-window.iDesign.Engine.scene.add(ambientLight);
 const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
 dirLight.position.set(5, 5, 5);
-window.iDesign.Engine.scene.add(dirLight);
 
-// Renderer setup
-window.iDesign.Engine.renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(window.iDesign.Engine.renderer.domElement);
-window.iDesign.Engine.camera.position.set(2, 2, 2);
+// If the core engine does not expose an init function, fall back to legacy immediate setup
+if (!window.iDesign.Engine.init) {
+    console.warn('[cabinet-engine] No engine.init detected — performing legacy renderer setup (appends canvas to body).');
 
-// Rendering Loop
-function animate() {
-    requestAnimationFrame(animate);
-    window.iDesign.Engine.renderer.render(window.iDesign.Engine.scene, window.iDesign.Engine.camera);
+    window.iDesign.Engine.scene = new THREE.Scene();
+    window.iDesign.Engine.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    window.iDesign.Engine.renderer = new THREE.WebGLRenderer({ antialias: true });
+
+    window.iDesign.Engine.scene.add(ambientLight);
+    window.iDesign.Engine.scene.add(dirLight);
+
+    window.iDesign.Engine.renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(window.iDesign.Engine.renderer.domElement);
+    window.iDesign.Engine.camera.position.set(2, 2, 2);
+
+    // Rendering Loop
+    function animate() {
+        requestAnimationFrame(animate);
+        if (window.iDesign.Engine && window.iDesign.Engine.renderer && window.iDesign.Engine.scene && window.iDesign.Engine.camera) {
+            window.iDesign.Engine.renderer.render(window.iDesign.Engine.scene, window.iDesign.Engine.camera);
+        }
+    }
+    animate();
+
+    // Canvas styling for legacy flow
+    try {
+        const canvas = window.iDesign.Engine.renderer.domElement;
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.zIndex = '-1';
+    } catch (e) { /* ignore */ }
+} else {
+    console.log('[cabinet-engine] engine.init available — deferring renderer setup to central engine.');
 }
-animate();
 
 // --- Integrated Build Method ---
 window.iDesign.Cabinet = {
     build: function(settings) {
-        window.iDesign.Engine.scene.clear(); // Wipe for fresh build
-        
-        // Re-add lights to scene
-        window.iDesign.Engine.scene.add(ambientLight);
-        window.iDesign.Engine.scene.add(dirLight);
+        if (!window.iDesign.Engine || !window.iDesign.Engine.scene) {
+            console.error('[iDesign.Cabinet] Engine not initialized; cannot build 3D parts.');
+            return;
+        }
 
-        const parts = CabinetEngine.generate(Project);
+        // Clear scene safely
+        if (typeof window.iDesign.Engine.scene.clear === 'function') {
+            window.iDesign.Engine.scene.clear();
+        } else {
+            // remove children manually if older THREE.js
+            while (window.iDesign.Engine.scene.children.length) {
+                window.iDesign.Engine.scene.remove(window.iDesign.Engine.scene.children[0]);
+            }
+        }
+
+        // Re-add lights
+        try {
+            window.iDesign.Engine.scene.add(ambientLight);
+            window.iDesign.Engine.scene.add(dirLight);
+        } catch (e) {
+            console.warn('[iDesign.Cabinet] Failed to add lights', e);
+        }
+
+        const parts = (typeof CabinetEngine.generate === 'function') ? CabinetEngine.generate(Project) : [];
 
         parts.forEach(part => {
-            const isBack = part.name.toLowerCase().includes('back');
+            const isBack = part.name && part.name.toLowerCase().includes('back');
             const thickness = isBack ? 0.003 : 0.016; 
-            const geometry = new THREE.BoxGeometry(part.width / 1000, part.height / 1000, thickness);
+            const geometry = new THREE.BoxGeometry((part.width || 0) / 1000, (part.height || 0) / 1000, thickness);
 
-            // Naming convention: Carcass vs Masonite
             const matName = isBack ? "Masonite" : "Carcass";
-            
             const material = new THREE.MeshLambertMaterial({ 
                 color: isBack ? 0x8b4513 : 0xcccccc, 
                 name: matName 
             }); 
 
             const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(0, part.height / 2000, 0); 
+            mesh.position.set(0, (part.height || 0) / 2000, 0); 
             window.iDesign.Engine.scene.add(mesh);
         });
         
         console.log("[iDesign] Build complete: Using Carcass/Masonite specifications.");
     }
 };
-
-// Canvas styling
-const canvas = window.iDesign.Engine.renderer.domElement;
-canvas.style.position = 'absolute';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.zIndex = '-1';
 
 console.log("Engineering Cabinet Engine Loaded and Ready.");

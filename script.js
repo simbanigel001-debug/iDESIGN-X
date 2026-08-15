@@ -49,144 +49,66 @@ const App = {
 
     bindEvents(){
 
+        const themeBtn = document.getElementById("themeBtn");
+        if (themeBtn) {
+            themeBtn.addEventListener("click", () => this.toggleTheme());
+        }
 
+        const commandBtn = document.getElementById("commandBtn");
+        if (commandBtn) {
+            commandBtn.addEventListener("click", () => this.openCommand());
+        }
 
-        document
-        .getElementById("themeBtn")
-        .addEventListener(
-            "click",
-            () => this.toggleTheme()
-        );
+        const startBtn = document.getElementById("startBtn");
+        if (startBtn) {
+            startBtn.addEventListener("click", () => this.createProject());
+        }
 
+        const generateBtn = document.getElementById("generateBtn");
+        if (generateBtn) {
+            generateBtn.addEventListener("click", () => this.generate());
+        }
 
+        const saveBtn = document.getElementById("saveBtn");
+        if (saveBtn) {
+            saveBtn.addEventListener("click", () => this.save());
+        }
 
+        const newProjectBtn = document.getElementById("newProjectBtn");
+        if (newProjectBtn) {
+            newProjectBtn.addEventListener("click", () => this.newProject());
+        }
 
-        document
-        .getElementById("commandBtn")
-        .addEventListener(
-            "click",
-            () => this.openCommand()
-        );
-
-
-
-
-        document
-        .getElementById("startBtn")
-        .addEventListener(
-            "click",
-            () => this.createProject()
-        );
-
-
-
-
-        document
-        .getElementById("generateBtn")
-        .addEventListener(
-            "click",
-            () => this.generate()
-        );
-
-
-
-
-        document
-        .getElementById("saveBtn")
-        .addEventListener(
-            "click",
-            () => this.save()
-        );
-
-
-
-
-        document
-        .getElementById("newProjectBtn")
-        .addEventListener(
-            "click",
-            () => this.newProject()
-        );
-
-
-
-
-        document
-        .getElementById("commandPalette")
-        .addEventListener(
-            "click",
-            (e)=>{
-
-                if(
-                    e.target.id === 
-                    "commandPalette"
-                ){
-
+        const commandPalette = document.getElementById("commandPalette");
+        if (commandPalette) {
+            commandPalette.addEventListener("click", (e)=>{
+                if (e.target.id === "commandPalette") {
                     this.closeCommand();
-
                 }
+            });
+        }
 
+        const commandInput = document.getElementById("commandInput");
+        if (commandInput) {
+            commandInput.addEventListener("keydown", (e)=>{
+                if (e.key === "Enter") {
+                    this.executeCommand(e.target.value);
+                }
+            });
+        }
+
+        document.addEventListener("keydown", (e)=>{
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                this.openCommand();
             }
-        );
 
-
-
-
-
-        document
-        .getElementById("commandInput")
-        .addEventListener(
-            "keydown",
-            (e)=>{
-
-                if(
-                    e.key === "Enter"
-                ){
-
-                    this.executeCommand(
-                        e.target.value
-                    );
-
-                }
-
+            if (e.key === "Escape") {
+                this.closeCommand();
             }
-        );
-
-
-
-        document.addEventListener(
-            "keydown",
-            (e)=>{
-
-
-                if(
-                    (e.ctrlKey || e.metaKey)
-                    &&
-                    e.key.toLowerCase()==="k"
-                ){
-
-                    e.preventDefault();
-
-                    this.openCommand();
-
-                }
-
-
-                if(
-                    e.key==="Escape"
-                ){
-
-                    this.closeCommand();
-
-                }
-
-
-            }
-        );
-
+        });
 
     },
-
 
 
 
@@ -218,11 +140,37 @@ const App = {
 
     generate(){
 
+        const sourceProject = typeof Project !== "undefined" ? Project : this.project;
+        const parts = (typeof CabinetEngine !== "undefined" && typeof CabinetEngine.generate === "function")
+            ? CabinetEngine.generate(sourceProject)
+            : [];
 
-        this.notify(
-            "Generator ready for cabinet engine"
-        );
+        const tableBody = document.querySelector("#cutListTable tbody");
+        if (tableBody) {
+            tableBody.innerHTML = "";
+            parts.forEach(part => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${part.name}</td>
+                    <td>${Number(part.width || 0).toFixed(1)}</td>
+                    <td>${Number(part.height || 0).toFixed(1)}</td>
+                    <td>${Number(part.material === "Melamine" ? 16 : 0) || 16}</td>
+                    <td>${part.quantity || 1}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
 
+        this.project.cabinets = sourceProject && Array.isArray(sourceProject.compartments) ? sourceProject.compartments.length : 0;
+        this.project.parts = parts.length;
+        this.project.sheets = Math.max(1, Math.ceil(this.project.parts / 4));
+        this.updateStats();
+
+        if (window.iDesign && window.iDesign.Cabinet && typeof window.iDesign.Cabinet.build === "function") {
+            window.iDesign.Cabinet.build(sourceProject && sourceProject.settings ? sourceProject.settings : {});
+        }
+
+        this.notify(parts.length ? "Cabinet generated successfully" : "Generator ready for cabinet engine");
 
     },
 
@@ -351,25 +299,41 @@ const App = {
 
     openCommand(){
 
+        let box = document.getElementById("commandPalette");
+        if (!box) {
+            box = document.createElement("div");
+            box.id = "commandPalette";
+            box.style.position = "fixed";
+            box.style.top = "50%";
+            box.style.left = "50%";
+            box.style.transform = "translate(-50%, -50%)";
+            box.style.padding = "1rem";
+            box.style.background = "#111827";
+            box.style.borderRadius = "12px";
+            box.style.boxShadow = "0 20px 45px rgba(0,0,0,0.35)";
+            box.style.zIndex = "1000";
 
-        const box =
-        document.getElementById(
-            "commandPalette"
-        );
+            const input = document.createElement("input");
+            input.id = "commandInput";
+            input.type = "text";
+            input.placeholder = "Type a command...";
+            input.style.width = "280px";
+            input.style.padding = "0.75rem";
+            input.style.borderRadius = "8px";
+            input.style.border = "1px solid #444";
+            input.style.background = "#0b1220";
+            input.style.color = "#fff";
+            box.appendChild(input);
+            document.body.appendChild(box);
+        }
 
+        box.classList.remove("hidden");
+        box.style.display = "block";
 
-        box.classList
-        .remove(
-            "hidden"
-        );
-
-
-        document
-        .getElementById(
-            "commandInput"
-        )
-        .focus();
-
+        const input = document.getElementById("commandInput");
+        if (input) {
+            input.focus();
+        }
 
     },
 
@@ -379,16 +343,13 @@ const App = {
 
     closeCommand(){
 
+        const box = document.getElementById("commandPalette");
+        if (!box) {
+            return;
+        }
 
-        document
-        .getElementById(
-            "commandPalette"
-        )
-        .classList
-        .add(
-            "hidden"
-        );
-
+        box.classList.add("hidden");
+        box.style.display = "none";
 
     },
 
@@ -450,43 +411,23 @@ const App = {
 
     notify(message){
 
+        let area = document.getElementById("notifications");
+        if (!area) {
+            area = document.createElement("div");
+            area.id = "notifications";
+            area.className = "notifications";
+            document.body.appendChild(area);
+        }
 
-        const area =
-        document.getElementById(
-            "notifications"
-        );
+        const item = document.createElement("div");
+        item.className = "notification";
+        item.textContent = message;
 
+        area.appendChild(item);
 
-        const item =
-        document.createElement(
-            "div"
-        );
-
-
-        item.className =
-        "notification";
-
-
-        item.textContent =
-        message;
-
-
-
-        area.appendChild(
-            item
-        );
-
-
-
-        setTimeout(
-            ()=>{
-
-                item.remove();
-
-            },
-            3000
-        );
-
+        setTimeout(() => {
+            item.remove();
+        }, 3000);
 
     },
 
@@ -542,46 +483,8 @@ const App = {
 
 
 };
-// Function to handle the Generate button click
-document.querySelector('button.generate-btn, #generateBtn, button:contains("Generate")').addEventListener('click', (e) => {
-    e.preventDefault();
 
-    // 1. Gather configuration from input fields
-    const config = {
-        width: parseFloat(document.querySelector('input[name="compartmentWidth"], #compartmentWidth, .wardrobe-width-input')?.value) || 2400,
-        height: 2700, // Or fetch from height input if available
-        depth: 600,   // Or fetch from depth input if available
-        boardThickness: 16
-    };
-
-    // 2. Trigger 3D Cabinet Model Generation in Three.js
-    const parts = ThreeSetup.generateCabinet(config);
-
-    // 3. Populate the HTML Cutting List Table
-    const tableBody = document.querySelector('#cutListTable tbody');
-    tableBody.innerHTML = ''; // Clear existing rows
-
-    parts.forEach(part => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${part.name}</td>
-            <td>${part.length.toFixed(1)}</td>
-            <td>${part.width.toFixed(1)}</td>
-            <td>${part.thickness}</td>
-            <td>${part.qty}</td>
-        `;
-        tableBody.appendChild(row);
-    });
-
-    // 4. Update project parts counter UI if applicable
-    const partsCountLabel = document.querySelector('.parts-counter');
-    if (partsCountLabel) {
-        partsCountLabel.textContent = `1 Cabinet | ${parts.length} Parts | 2 Sheets`;
-    }
-});
-
-
-
+window.App = App;
 
 document.addEventListener(
     "DOMContentLoaded",

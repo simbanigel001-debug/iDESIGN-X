@@ -1,62 +1,102 @@
 :root {
- --gh-bg-canvas: #0d1117;
- --gh-bg-subtle: #161b22;
+ /* GitHub Base Dark Surfaces */
+ --gh-canvas: #0d1117;
+ --gh-canvas-subtle: #161b22;
  --gh-border: #30363d;
- --gh-text-primary: #f0f6fc;
+ --gh-text: #f0f6fc;
  --gh-text-muted: #8b949e;
- --gh-btn-bg: #21262d;
- --gh-btn-hover: #30363d;
- --gh-primary-btn-bg: #238636;
- --gh-primary-btn-hover: #2ea043;
+
+ /* GitHub Vibrant Accent Colors */
+ --gh-green: #238636; /* Primary success / Generate buttons */
+ --gh-green-hover: #2ea043;
+ --gh-blue: #1f6feb; /* Links, Info, Action details */
+ --gh-blue-hover: #388bfd;
+ --gh-purple: #8957e5; /* Badges, Special highlights */
+ --gh-purple-hover: #a371f7;
+ --gh-orange: #d29922; /* Warnings / Highlights */
+ --gh-red: #da3633; /* Delete / Danger actions */
+ --gh-red-hover: #f85149;
 }
 
 body {
- background-color: var(--gh-bg-canvas);
- color: var(--gh-text-primary);
+ background-color: var(--gh-canvas);
+ color: var(--gh-text);
  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
  margin: 0;
 }
 
 /* Panels, Cards, and Containers */
 .panel, .card, header, nav, aside {
- background-color: var(--gh-bg-subtle);
+ background-color: var(--gh-canvas-subtle);
  border: 1px solid var(--gh-border);
  border-radius: 6px;
 }
 
 /* Standard Buttons */
 button, .btn {
- background-color: var(--gh-btn-bg);
+ background-color: rgba(255,255,255,0.03);
  border: 1px solid var(--gh-border);
- color: var(--gh-text-primary);
+ color: var(--gh-text);
  border-radius: 6px;
- padding: 5px 16px;
+ padding: 5px 12px;
  font-weight: 500;
  font-size: 14px;
  cursor: pointer;
- transition: background-color 0.2s ease;
+ transition: background-color 0.12s ease;
 }
 
 button:hover, .btn:hover {
- background-color: var(--gh-btn-hover);
+ background-color: rgba(255,255,255,0.04);
 }
 
 /* Primary Action Buttons (GitHub Green) */
-button.primary, .btn-primary, #generate-btn {
- background-color: var(--gh-primary-btn-bg);
- border-color: var(--gh-border);
+.btn-primary, button.primary, #generate-btn {
+ background-color: var(--gh-green);
+ border: 1px solid rgba(240, 246, 252, 0.1);
  color: #ffffff;
+ font-weight: 600;
+ border-radius: 6px;
+}
+.btn-primary:hover, button.primary:hover, #generate-btn:hover {
+ background-color: var(--gh-green-hover);
 }
 
-button.primary:hover, .btn-primary:hover, #generate-btn:hover {
- background-color: var(--gh-primary-btn-hover);
+/* Secondary / Action Info Buttons (GitHub Blue) */
+.btn-info, .btn-secondary {
+ background-color: var(--gh-blue);
+ color: #ffffff;
+ border-radius: 6px;
+ border: 1px solid rgba(240, 246, 252, 0.1);
+}
+.btn-info:hover {
+ background-color: var(--gh-blue-hover);
+}
+
+/* Special Feature Buttons (GitHub Purple) */
+.btn-special, .badge-purple {
+ background-color: var(--gh-purple);
+ color: #ffffff;
+ border-radius: 6px;
+}
+.btn-special:hover {
+ background-color: var(--gh-purple-hover);
+}
+
+/* Danger / Reset Buttons (GitHub Red) */
+.btn-danger, #reset-btn {
+ background-color: var(--gh-red);
+ color: #ffffff;
+ border-radius: 6px;
+}
+.btn-danger:hover {
+ background-color: var(--gh-red-hover);
 }
 
 /* Tables and Cutting Lists */
 table {
  width: 100%;
  border-collapse: collapse;
- background-color: var(--gh-bg-subtle);
+ background-color: var(--gh-canvas-subtle);
  border: 1px solid var(--gh-border);
  border-radius: 6px;
  overflow: hidden;
@@ -66,11 +106,11 @@ th, td {
  padding: 8px 12px;
  border-bottom: 1px solid var(--gh-border);
  text-align: left;
- color: var(--gh-text-primary);
+ color: var(--gh-text);
 }
 
 th {
- background-color: var(--gh-bg-canvas);
+ background-color: var(--gh-canvas);
  font-weight: 600;
  color: var(--gh-text-muted);
 }

@@ -138,3 +138,63 @@ th {
  padding: 0 8px 1rem 8px;
 }
 
+/* Button hover glows (subtle) */
+.btn-primary:hover, button.primary:hover {
+  box-shadow: 0 8px 24px rgba(35,134,54,0.12);
+}
+.btn-info:hover {
+  box-shadow: 0 8px 24px rgba(31,111,235,0.12);
+}
+.btn-special:hover {
+  box-shadow: 0 8px 24px rgba(137,87,229,0.12);
+}
+.btn-danger:hover {
+  box-shadow: 0 8px 24px rgba(218,54,51,0.12);
+}
+
+/* Workspace panels layout: 3D preview + Cutting list */
+.workspace-panels {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem 8px;
+}
+
+.three-panel {
+  min-height: 420px;
+  background-color: rgba(255,255,255,0.02);
+  border: 1px solid var(--gh-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.cut-list-panel {
+  background-color: var(--gh-canvas-subtle);
+  border: 1px solid var(--gh-border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  max-height: 640px;
+  overflow: auto;
+}
+
+/* Ensure tables inside panel don't overflow */
+.cut-list-panel table {
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* Responsive fallback */
+@media (max-width: 900px) {
+  .workspace-panels {
+    grid-template-columns: 1fr;
+  }
+  .cut-list-panel {
+    order: 2;
+  }
+  .three-panel {
+    order: 1;
+    min-height: 320px;
+  }
+}
+

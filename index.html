@@ -80,38 +80,9 @@
                 <button id="commandBtn">Command Palette <span>Ctrl + K</span></button>
             </div>
 
-            <!-- Workspace panels: 3D preview and cutting list side-by-side -->
+            <!-- Workspace panels: 3D preview on the left; inspector cards live in the right-side inspector -->
             <div class="workspace-panels">
                 <div id="threeViewer" class="three-panel" aria-label="3D Preview"></div>
-                <div class="cut-list-panel">
-                    <div class="cutlist-header">
-                        <h3>Cutting List Output</h3>
-                        <div class="cutlist-actions">
-                            <div class="toolbar-actions">
-                                <button class="btn-primary" onclick="Cabinet3DModel.build()">Generate 3D Wardrobe</button>
-                                <button class="btn-info" onclick="Door3DSystem.build()">Generate 3D Doors</button>
-                                <button class="btn-info" onclick="Interior3DSystem.build()">Generate Interior</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="cut-list-container">
-                        <table id="cutListTable">
-                            <thead>
-                                <tr>
-                                    <th>Part Name</th>
-                                    <th>Length (mm)</th>
-                                    <th>Width (mm)</th>
-                                    <th>Thickness (mm)</th>
-                                    <th>Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Dynamically populated rows will appear here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
 
             <div class="design-board">
@@ -125,13 +96,74 @@
             </div>
         </section>
 
-        <!-- RIGHT INSPECTOR -->
+        <!-- RIGHT INSPECTOR: stacked cards for controls and outputs -->
         <aside class="inspector">
             <div class="panel-title">INSPECTOR</div>
-            <div class="property-card"><label>Project</label><div class="value">Untitled Project</div></div>
-            <div class="property-card"><label>Height</label><div class="value">2700 mm</div></div>
-            <div class="property-card"><label>Depth</label><div class="value">600 mm</div></div>
-            <div class="property-card"><label>Material</label><div class="value">Melamine</div></div>
+
+            <div class="controls-grid">
+
+                <div class="card workspace-controls">
+                    <h4>Workspace Controls</h4>
+                    <div class="card-body">
+                        <div class="btn-row">
+                            <button onclick="CameraControls3D.reset()" class="btn-info">Reset View</button>
+                            <button onclick="CameraControls3D.frontView()">Front</button>
+                            <button onclick="CameraControls3D.sideView()">Side</button>
+                            <button onclick="CameraControls3D.topView()">Top</button>
+                        </div>
+                        <div class="btn-row" style="margin-top:0.5rem;">
+                            <button id="undoButton">Undo</button>
+                            <button id="redoButton">Redo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card wardrobe-inputs">
+                    <h4>Wardrobe Inputs</h4>
+                    <div class="card-body">
+                        <label>Width (mm)</label>
+                        <input id="compartmentWidth" type="number" value="2400" />
+                        <label>Height (mm)</label>
+                        <input id="projectHeight" type="number" value="2700" />
+                        <label>Depth (mm)</label>
+                        <input id="projectDepth" type="number" value="600" />
+                    </div>
+                </div>
+
+                <div class="card auto-design">
+                    <h4>Auto Design</h4>
+                    <div class="card-body">
+                        <div style="display:flex;gap:0.5rem;align-items:center;">
+                            <button class="btn-primary" id="generateBtnInspector">Generate</button>
+                            <button class="btn-special">Auto Layout</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card cutting-list-card">
+                    <h4>Cutting List</h4>
+                    <div class="card-body">
+                        <div class="cut-list-container">
+                            <table id="cutListTable">
+                                <thead>
+                                    <tr>
+                                        <th>Part Name</th>
+                                        <th>Length (mm)</th>
+                                        <th>Width (mm)</th>
+                                        <th>Thickness (mm)</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamically populated rows will appear here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </aside>
     </main>
 

@@ -138,6 +138,62 @@ th {
  padding: 0 8px 1rem 8px;
 }
 
+/* Inspector cards grid */
+.controls-grid {
+ display: grid;
+ grid-template-columns: 1fr;
+ gap: 0.75rem;
+ padding: 0.75rem;
+}
+
+.card {
+ background-color: var(--gh-canvas-subtle);
+ border: 1px solid var(--gh-border);
+ border-radius: 6px;
+ padding: 0.5rem 0.75rem;
+}
+.card h4 {
+ margin: 0 0 0.5rem 0;
+ font-size: 0.95rem;
+ color: var(--gh-text-muted);
+}
+.card .card-body {
+ display: flex;
+ flex-direction: column;
+ gap: 0.5rem;
+}
+
+.card .btn-row {
+ display: flex;
+ gap: 0.5rem;
+ flex-wrap: wrap;
+}
+
+.card input[type="number"],
+.card input[type="text"],
+.card select {
+ width: 100%;
+ padding: 6px 8px;
+ border-radius: 6px;
+ border: 1px solid var(--gh-border);
+ background: rgba(255,255,255,0.02);
+ color: var(--gh-text);
+}
+
+/* Make cutting list card table fit */
+.cutting-list-card .cut-list-container {
+ padding: 0;
+}
+.cutting-list-card table th, .cutting-list-card table td {
+ padding: 6px 8px;
+}
+
+@media (min-width: 1200px) {
+ .controls-grid {
+  grid-template-columns: 1fr;
+ }
+}
+
 /* Button hover glows (subtle) */
 .btn-primary:hover, button.primary:hover {
   box-shadow: 0 8px 24px rgba(35,134,54,0.12);

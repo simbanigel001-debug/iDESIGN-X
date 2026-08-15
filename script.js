@@ -542,7 +542,43 @@ const App = {
 
 
 };
+// Function to handle the Generate button click
+document.querySelector('button.generate-btn, #generateBtn, button:contains("Generate")').addEventListener('click', (e) => {
+    e.preventDefault();
 
+    // 1. Gather configuration from input fields
+    const config = {
+        width: parseFloat(document.querySelector('input[name="compartmentWidth"], #compartmentWidth, .wardrobe-width-input')?.value) || 2400,
+        height: 2700, // Or fetch from height input if available
+        depth: 600,   // Or fetch from depth input if available
+        boardThickness: 16
+    };
+
+    // 2. Trigger 3D Cabinet Model Generation in Three.js
+    const parts = ThreeSetup.generateCabinet(config);
+
+    // 3. Populate the HTML Cutting List Table
+    const tableBody = document.querySelector('#cutListTable tbody');
+    tableBody.innerHTML = ''; // Clear existing rows
+
+    parts.forEach(part => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${part.name}</td>
+            <td>${part.length.toFixed(1)}</td>
+            <td>${part.width.toFixed(1)}</td>
+            <td>${part.thickness}</td>
+            <td>${part.qty}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+
+    // 4. Update project parts counter UI if applicable
+    const partsCountLabel = document.querySelector('.parts-counter');
+    if (partsCountLabel) {
+        partsCountLabel.textContent = `1 Cabinet | ${parts.length} Parts | 2 Sheets`;
+    }
+});
 
 
 

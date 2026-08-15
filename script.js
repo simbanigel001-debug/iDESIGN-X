@@ -193,6 +193,7 @@ const App = {
                     <td>${Number(part.height || 0).toFixed(1)}</td>
                     <td>${Number(part.material === "Melamine" ? 16 : 0) || 16}</td>
                     <td>${part.quantity || 1}</td>
+                    <td>${part.edging || ''}</td>
                 `;
                 tableBody.appendChild(row);
             });

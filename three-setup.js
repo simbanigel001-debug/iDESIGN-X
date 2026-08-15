@@ -11,6 +11,27 @@ iDesign.Engine = {
     container: null,
 
     init: function(containerId) {
+        // Cancel previous animation loop if any
+        if (this._frameId) {
+            try { cancelAnimationFrame(this._frameId); } catch (e) { /* ignore */ }
+            this._frameId = null;
+        }
+
+        // Dispose existing renderer and remove DOM element
+        if (this.renderer) {
+            try {
+                if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+                    this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+                }
+                if (typeof this.renderer.dispose === 'function') {
+                    this.renderer.dispose();
+                }
+            } catch (disposeErr) {
+                console.warn('[iDesign.Engine] Error disposing previous renderer', disposeErr);
+            }
+            this.renderer = null;
+        }
+
         this.container = document.getElementById(containerId);
         if (!this.container) {
             console.error("[iDesign.Engine] Container not found.");
@@ -39,8 +60,11 @@ iDesign.Engine = {
     },
 
     animate: function() {
-        requestAnimationFrame(() => this.animate());
-        this.renderer.render(this.scene, this.camera);
+        // store frame id so it can be cancelled on re-init
+        this._frameId = requestAnimationFrame(() => this.animate());
+        if (this.renderer && this.scene && this.camera) {
+            this.renderer.render(this.scene, this.camera);
+        }
     }
 };
 

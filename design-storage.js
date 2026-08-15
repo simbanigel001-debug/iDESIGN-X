@@ -5,11 +5,15 @@
 
 const DesignStorage = {
 
-    // Saves the current project
+    storageKey: 'CabinetStudioProjects',
+
+    // Saves (adds) a project to the projects list
     saveProject(project) {
         try {
-            const data = JSON.stringify(project);
-            localStorage.setItem("CabinetStudioProject", data);
+            const list = this.getProjects();
+            const withMeta = Object.assign({ id: project.id || crypto.randomUUID(), savedAt: new Date().toISOString() }, project);
+            list.unshift(withMeta);
+            localStorage.setItem(this.storageKey, JSON.stringify(list));
             console.log("DesignStorage: Project saved successfully.");
             return true;
         } catch (error) {
@@ -18,26 +22,30 @@ const DesignStorage = {
         }
     },
 
-    // Loads a specific project
+    // Loads the most recent project
     loadProject() {
         try {
-            const data = localStorage.getItem("CabinetStudioProject");
-            return data ? JSON.parse(data) : null;
+            const list = this.getProjects();
+            return list.length ? list[0] : null;
         } catch (error) {
             return null;
         }
     },
 
-    // NEW: Added this to fix the "getProjects is not a function" error
+    // Return all saved projects
     getProjects() {
         try {
-            const data = localStorage.getItem("CabinetStudioProject");
-            // If data exists, return it in an array; otherwise return empty list
-            return data ? [JSON.parse(data)] : [];
+            const data = localStorage.getItem(this.storageKey);
+            return data ? JSON.parse(data) : [];
         } catch (error) {
             console.error("DesignStorage: Failed to get projects.", error);
             return [];
         }
+    },
+
+    // Optional: find by id
+    findProject(id) {
+        return this.getProjects().find(p => p.id === id) || null;
     }
 
 };

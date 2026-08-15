@@ -7,79 +7,46 @@
 
 const ProductionExport = {
 
+    // Helper: build metadata header lines
+    _buildHeader(project) {
+        if(!project) return '';
+        const lines = [];
+        lines.push(`Project: ${project.name || 'Untitled'}`);
+        if (project.type) lines.push(`Type: ${project.type}`);
+        if (project.customer) lines.push(`Customer: ${project.customer}`);
+        if (project.address) lines.push(`Address: ${project.address}`);
+        if (project.contact) lines.push(`Contact: ${project.contact}`);
+        lines.push(`Date: ${project.savedAt || new Date().toISOString()}`);
+        return lines.join('\n') + '\n\n';
+    },
 
+    exportMaxCut(){
+        const parts = Project.generatedParts || [];
+        if(!parts.length){ App.notify('No parts available'); return; }
 
-    exportCSV(){
-
-
-
-        const parts =
-
-        Project.generatedParts;
-
-
-
-
-
-        if(
-            !parts.length
-        ){
-
-
-            App.notify(
-                "No parts available"
-            );
-
-
-            return;
-
-
-        }
-
-
-
-
-
-
-
-        let csv =
-
-        "PART,WIDTH,HEIGHT,QTY,MATERIAL\n";
-
-
-
-
-
-
-
-        parts.forEach(part=>{
-
-
-
-            csv +=
-
-            `${part.name},${part.width},${part.height},${part.quantity},${part.material || "Melamine 16mm"}\n`;
-
-
-
+        const project = DesignStorage.loadProject();
+        let content = this._buildHeader(project);
+        // MaxCut: tab-separated: Part Name\tLength\tWidth\tQty\tMaterial
+        parts.forEach(p => {
+            const material = p.material || 'Melamine';
+            content += `${p.name}\t${p.height || p.length || 0}\t${p.width || 0}\t${p.quantity || 1}\t${material}\n`;
         });
 
+        this.download(content, 'cabinet-maxcut.txt', 'text/plain');
+    },
 
+    exportCSV(){
+        const parts = Project.generatedParts || [];
+        if(!parts.length){ App.notify('No parts available'); return; }
 
+        const project = DesignStorage.loadProject();
+        let csv = this._buildHeader(project);
+        csv += 'PART,WIDTH,HEIGHT,QTY,MATERIAL\n';
+        parts.forEach(part => {
+            csv += `${part.name},${part.width},${part.height},${part.quantity},${part.material || 'Melamine 16mm'}\n`;
+        });
 
-
-
-
-        this.download(
-
-            csv,
-
-            "cabinet-cutting-list.csv"
-
-        );
-
-
-
+        this.download(csv, 'cabinet-cutting-list.csv', 'text/csv');
     },
 
 
@@ -158,80 +125,15 @@ const ProductionExport = {
 
 
 
-    download(content,name){
-
-
-
-        const blob =
-
-        new Blob(
-
-            [
-
-                content
-
-            ],
-
-            {
-
-                type:
-
-                "text/csv"
-
-            }
-
-        );
-
-
-
-
-
-        const url =
-
-        URL.createObjectURL(
-
-            blob
-
-        );
-
-
-
-
-
-        const link =
-
-        document.createElement(
-
-            "a"
-
-        );
-
-
-
-
-
-        link.href=url;
-
-
-
-        link.download=name;
-
-
-
+    download(content,name, mime){
+        const type = mime || 'text/csv';
+        const blob = new Blob([content], { type });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = name;
         link.click();
-
-
-
-
-
-        URL.revokeObjectURL(
-
-            url
-
-        );
-
-
-
+        URL.revokeObjectURL(url);
     }
 
 

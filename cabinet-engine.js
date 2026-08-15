@@ -69,12 +69,11 @@ const CabinetEngine = {
 };
 
 // --- iDesign Engine Initialization ---
-window.iDesign.Engine = {
-    scene: new THREE.Scene(),
-    camera: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
-    renderer: new THREE.WebGLRenderer({ antialias: true }),
-    logic: CabinetEngine
-};
+window.iDesign.Engine = window.iDesign.Engine || {};
+window.iDesign.Engine.scene = new THREE.Scene();
+window.iDesign.Engine.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+window.iDesign.Engine.renderer = new THREE.WebGLRenderer({ antialias: true });
+window.iDesign.Engine.logic = CabinetEngine;
 
 // Lighting for visual clarity
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);

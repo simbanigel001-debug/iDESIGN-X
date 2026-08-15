@@ -76,7 +76,21 @@ const App = {
 
         const newProjectBtn = document.getElementById("newProjectBtn");
         if (newProjectBtn) {
-            newProjectBtn.addEventListener("click", () => this.newProject());
+            newProjectBtn.addEventListener("click", () => this.openNewProjectModal());
+        }
+
+        // Inspector generate / auto layout bindings
+        const generateInspector = document.getElementById('generateBtnInspector');
+        if (generateInspector) {
+            generateInspector.addEventListener('click', () => this.generate());
+        }
+        const autoLayoutBtn = document.getElementById('autoLayoutBtn');
+        if (autoLayoutBtn && window.AutoLayoutUI) {
+            autoLayoutBtn.addEventListener('click', () => AutoLayoutUI.generate());
+        }
+        const autoDesignBtn = document.querySelector('.btn-special');
+        if (autoDesignBtn && window.AutoLayoutUI) {
+            autoDesignBtn.addEventListener('click', () => AutoLayoutUI.generate());
         }
 
         const commandPalette = document.getElementById("commandPalette");
@@ -166,13 +180,130 @@ const App = {
         this.project.sheets = Math.max(1, Math.ceil(this.project.parts / 4));
         this.updateStats();
 
+        // Open 3D modal with canvas and initialize engine inside it
+        this.open3DModal();
         if (window.iDesign && window.iDesign.Cabinet && typeof window.iDesign.Cabinet.build === "function") {
+            // build will render into the engine's scene; ensure engine init targets the modal container
+            if (window.iDesign.Engine && typeof window.iDesign.Engine.init === 'function') {
+                window.iDesign.Engine.init('threeViewerModal');
+            }
             window.iDesign.Cabinet.build(sourceProject && sourceProject.settings ? sourceProject.settings : {});
         }
 
         this.notify(parts.length ? "Cabinet generated successfully" : "Generator ready for cabinet engine");
 
     },
+
+    // 3D modal control
+    open3DModal(){
+        let modal = document.getElementById('threeModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'threeModal';
+            modal.style.position = 'fixed';
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+            modal.style.width = '80%';
+            modal.style.height = '80%';
+            modal.style.background = 'var(--gh-canvas)';
+            modal.style.border = '1px solid var(--gh-border)';
+            modal.style.borderRadius = '8px';
+            modal.style.zIndex = 2000;
+            modal.style.display = 'flex';
+            modal.style.flexDirection = 'column';
+
+            const header = document.createElement('div');
+            header.style.display = 'flex';
+            header.style.justifyContent = 'space-between';
+            header.style.alignItems = 'center';
+            header.style.padding = '8px';
+            header.style.borderBottom = '1px solid var(--gh-border)';
+
+            const title = document.createElement('div');
+            title.textContent = '3D Preview';
+            title.style.color = 'var(--gh-text)';
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = 'Close';
+            closeBtn.className = 'btn-danger';
+            closeBtn.style.marginLeft = '8px';
+            closeBtn.addEventListener('click', () => modal.remove());
+
+            header.appendChild(title);
+            header.appendChild(closeBtn);
+            modal.appendChild(header);
+
+            const viewer = document.createElement('div');
+            viewer.id = 'threeViewerModal';
+            viewer.style.flex = '1';
+            viewer.style.minHeight = '300px';
+            modal.appendChild(viewer);
+
+            document.body.appendChild(modal);
+
+            // make draggable
+            this._makeDraggable(modal, header);
+        }
+    },
+
+    _makeDraggable(el, handle){
+        let isDown = false, startX=0, startY=0, origX=0, origY=0;
+        handle.style.cursor = 'move';
+        handle.addEventListener('pointerdown', (e)=>{ isDown=true; startX=e.clientX; startY=e.clientY; const rect=el.getBoundingClientRect(); origX=rect.left; origY=rect.top; e.preventDefault(); });
+        document.addEventListener('pointermove', (e)=>{ if(!isDown) return; const dx=e.clientX-startX; const dy=e.clientY-startY; el.style.left=(origX+dx)+'px'; el.style.top=(origY+dy)+'px'; el.style.transform='none'; });
+        document.addEventListener('pointerup', ()=>{ isDown=false; });
+    },
+
+    openNewProjectModal(){
+        // create modal to collect project metadata
+        let modal = document.getElementById('newProjectModal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'newProjectModal';
+            modal.style.position = 'fixed';
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+            modal.style.width = '480px';
+            modal.style.background = 'var(--gh-canvas)';
+            modal.style.border = '1px solid var(--gh-border)';
+            modal.style.borderRadius = '8px';
+            modal.style.padding = '12px';
+            modal.style.zIndex = 2100;
+
+            modal.innerHTML = `
+                <h3 style="margin-top:0;color:var(--gh-text)">New Project Details</h3>
+                <label>Customer Name</label>
+                <input id="projCustomer" type="text" />
+                <label>Project Type</label>
+                <select id="projType"><option>Wardrobe</option><option>BIC</option></select>
+                <label>Address</label>
+                <input id="projAddress" type="text" />
+                <label>Contact</label>
+                <input id="projContact" type="text" />
+                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+                    <button id="projCancel" class="btn">Cancel</button>
+                    <button id="projSave" class="btn-primary">Save</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.getElementById('projCancel').addEventListener('click', ()=>modal.remove());
+            document.getElementById('projSave').addEventListener('click', ()=>{
+                const details = {
+                    name: document.getElementById('projCustomer').value || 'Untitled',
+                    type: document.getElementById('projType').value,
+                    address: document.getElementById('projAddress').value || '',
+                    contact: document.getElementById('projContact').value || ''
+                };
+                // persist
+                DesignStorage.saveProject({ name: details.name, type: details.type, customer: details.name, address: details.address, contact: details.contact });
+                modal.remove();
+                App.notify('Project details saved');
+            });
+        }
+    },
+
 
 
 

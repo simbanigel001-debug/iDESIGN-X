@@ -187,12 +187,19 @@ const App = {
             tableBody.innerHTML = "";
             parts.forEach(part => {
                 const row = document.createElement("tr");
+                const lengthVal = Number(part.height || part.length || 0).toFixed(1);
+                const widthVal = Number(part.width || 0).toFixed(1);
+                // Thickness: prefer explicit part.thickness, else default 16mm
+                const thicknessVal = Number(part.thickness || (part.material === "Melamine" ? 16 : 16)).toFixed(1);
+                const materialName = (part.materialId && window.PGBoardCatalog && window.PGBoardCatalog.get(part.materialId)) ? window.PGBoardCatalog.get(part.materialId).name : (part.material || 'Melamine');
+
                 row.innerHTML = `
                     <td>${part.name}</td>
-                    <td>${Number(part.width || 0).toFixed(1)}</td>
-                    <td>${Number(part.height || 0).toFixed(1)}</td>
-                    <td>${Number(part.material === "Melamine" ? 16 : 0) || 16}</td>
+                    <td>${lengthVal}</td>
+                    <td>${widthVal}</td>
+                    <td>${thicknessVal}</td>
                     <td>${part.quantity || 1}</td>
+                    <td>${materialName}</td>
                     <td>${part.edging || ''}</td>
                 `;
                 tableBody.appendChild(row);

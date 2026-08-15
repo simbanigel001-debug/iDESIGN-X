@@ -45,7 +45,9 @@ const CabinetIntegration = {
 
                         door.height,
 
-                        1
+                        1,
+
+                        compartment.id
 
                     )
 
@@ -110,7 +112,9 @@ const CabinetIntegration = {
 
                         drawer.front.height,
 
-                        1
+                        1,
+
+                        compartment.id
 
                     )
 
@@ -136,7 +140,9 @@ const CabinetIntegration = {
 
                         drawer.carcass.sideHeight,
 
-                        drawer.carcass.sides
+                        drawer.carcass.sides,
+
+                        compartment.id
 
                     )
 
@@ -162,7 +168,9 @@ const CabinetIntegration = {
 
                         drawer.bottom.depth,
 
-                        1
+                        1,
+
+                        compartment.id
 
                     )
 

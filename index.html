@@ -127,6 +127,8 @@
                         <input id="projectHeight" type="number" value="2700" />
                         <label>Depth (mm)</label>
                         <input id="projectDepth" type="number" value="600" />
+                        <label>Material</label>
+                        <select id="materialSelect"></select>
                     </div>
                 </div>
 
@@ -228,6 +230,9 @@
     <script src="layout-optimizer.js" defer></script>
     <script src="auto-layout-ui.js" defer></script>
     <script src="layout-preview-sync.js" defer></script>
+    <!-- PG Board catalog and edging rules: provide material metadata and edging engine -->
+    <script src="pgb-catalog.js" defer></script>
+    <script src="edging-rules.js" defer></script>
     <script src="cabinet-engine.js" defer></script>
     <script src="cabinet-module.js" defer></script>
     <script src="app.js" defer></script>

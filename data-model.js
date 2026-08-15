@@ -26,8 +26,10 @@ class CabinetProject {
 
             plinth: 100,
 
-            material:
-            "Melamine"
+            // materialId references PGBoardCatalog id
+            materialId: window.PGBoardCatalog ? window.PGBoardCatalog.defaultId() : 'blanco',
+            // backward-compatible label
+            material: "Melamine"
 
         };
 
@@ -243,7 +245,7 @@ class Compartment {
 class Part {
 
 
-    constructor(name,width,height,qty){
+    constructor(name,width,height,qty,compartmentId){
 
 
         this.id =
@@ -266,9 +268,16 @@ class Part {
         qty || 1;
 
 
+        // which compartment this part belongs to (for multi-cabinet placement)
+        this.compartmentId = compartmentId || null;
 
+        // material id (PGBoardCatalog) or legacy material string
+        this.materialId = null;
         this.material =
         "Melamine";
+
+        // edging information (populated by engine rules)
+        this.edging = null;
 
 
     }

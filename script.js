@@ -111,6 +111,29 @@ const App = {
             });
         }
 
+        // Material select: populate from PGBoardCatalog and wire change
+        const materialSelect = document.getElementById('materialSelect');
+        if (materialSelect && window.PGBoardCatalog) {
+            try {
+                const list = window.PGBoardCatalog.list();
+                materialSelect.innerHTML = list.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+                // set current value from Project if available
+                if (typeof Project !== 'undefined' && Project.settings && Project.settings.materialId) {
+                    materialSelect.value = Project.settings.materialId;
+                }
+                materialSelect.addEventListener('change', (e) => {
+                    const id = e.target.value;
+                    if (typeof Project !== 'undefined' && Project.settings) {
+                        Project.settings.materialId = id;
+                    }
+                    try { DesignStorage.saveProject(Project); } catch (err) { /* ignore */ }
+                    this.notify('Material selected: ' + (window.PGBoardCatalog.get(id)?.name || id));
+                });
+            } catch (err) {
+                console.warn('Failed to populate material select', err);
+            }
+        }
+
         document.addEventListener("keydown", (e)=>{
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
                 e.preventDefault();

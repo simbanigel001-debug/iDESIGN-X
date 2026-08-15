@@ -42,7 +42,23 @@
         <button onclick="Door3DSystem.build()">Generate 3D Doors</button>
         <button onclick="Interior3DSystem.build()">Generate Interior</button>
     </div>
-    
+    <div class="cut-list-container">
+    <h3>Cutting List Output</h3>
+    <table id="cutListTable">
+        <thead>
+            <tr>
+                <th>Part Name</th>
+                <th>Length (mm)</th>
+                <th>Width (mm)</th>
+                <th>Thickness (mm)</th>
+                <th>Qty</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamically populated rows will appear here -->
+        </tbody>
+    </table>
+</div>
     <!-- MAIN APPLICATION AREA -->
     <main class="workspace">
         <aside class="sidebar">
